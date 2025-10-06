@@ -1,92 +1,77 @@
-import { Model, FilterQuery } from 'mongoose';
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import {
   calculateAffinityMetricsByGroups,
   calculateGroupedMetrics,
-  ecopetrolStringValuesKeys,
   Filters,
   getDBData,
-  getDateRangeQuery,
-  getMongoFilter,
   getDataByCity,
   LocationDataKeys,
   getDataInTime,
-  getDataByMateriality,
   MapChartData,
+  getMongoQuery,
+  ecopetrolAffinityQueryKeys,
+  ecopetrolMaterialityQueryKeys,
+  EcopetrolEnum,
+  MongoCollections,
 } from 'src/common';
 
 import {
   Ecopetrol,
   EcopetrolAffinityResponse,
   EcopetrolByDimension,
-  EcopetrolDocument,
+  EcopetrolByMateriality,
   EcopetrolMaterialityResponse,
 } from './ecopetrol.schema';
 
 @Injectable()
 export class EcopetrolService {
   constructor(
-    @InjectModel('df_ecp') private ecopetrolModel: Model<Ecopetrol>,
+    @InjectModel(MongoCollections.Ecopetrol)
+    private ecopetrolModel: Model<Ecopetrol>,
   ) {}
 
   async findAffinityData(filters: Filters): Promise<EcopetrolAffinityResponse> {
-    const { dates, needsPastData, extraFilters } = filters;
+    const query = getMongoQuery(filters, 30, ecopetrolAffinityQueryKeys);
 
-    const extraFilterKeys = Object.keys(extraFilters);
-    if (!extraFilterKeys.includes('dimension'))
-      extraFilterKeys.push('dimension');
-
-    const query: FilterQuery<EcopetrolDocument> = {
-      ...getDateRangeQuery(dates, needsPastData, 30),
-      ...extraFilterKeys.reduce((acc, el) => {
-        if (el === 'dimension')
-          acc[el] = getMongoFilter(extraFilters[el], 'array-ne');
-        else if (ecopetrolStringValuesKeys.includes(el))
-          acc[el] = getMongoFilter(extraFilters[el], 'string');
-        else acc[el] = getMongoFilter(extraFilters[el]);
-
-        if (!acc[el]) delete acc[el];
-        return acc;
-      }, {}),
-    };
-
-    const rawData = await getDBData(this.ecopetrolModel, query, undefined);
+    const rawData = await getDBData<Ecopetrol>(
+      this.ecopetrolModel,
+      query,
+      undefined,
+    );
 
     const dataByGroup = calculateGroupedMetrics(
       rawData,
-      'g_interest',
-      'dimension',
-      filters.extraFilters.g_interest || [],
-      filters.extraFilters.dimension || [],
+      EcopetrolEnum.GInterest,
+      EcopetrolEnum.Dimension,
+      filters.extraFilters[EcopetrolEnum.GInterest] || [],
+      filters.extraFilters[EcopetrolEnum.Dimension] || [],
     );
 
     const dataByDimension = calculateAffinityMetricsByGroups(
       rawData,
-      'g_interest',
-      'dimension',
-      filters.extraFilters.g_interest || [],
-      filters.extraFilters.dimension || [],
-    ).map((v) => {
-      const g_interest = dataByGroup.find((d) => d.id === v.g_interest);
-      if (g_interest) v.affinity = g_interest.General as number;
-      return v;
-    }) as EcopetrolByDimension[];
+      EcopetrolEnum.GInterest,
+      EcopetrolEnum.Dimension,
+      filters.extraFilters[EcopetrolEnum.GInterest] || [],
+      filters.extraFilters[EcopetrolEnum.Dimension] || [],
+      dataByGroup,
+    ) as EcopetrolByDimension[];
 
     const dataInTimeByInterestGroup = getDataInTime(
       rawData,
-      filters.extraFilters.g_interest || [],
-      'g_interest',
+      filters.extraFilters[EcopetrolEnum.GInterest] || [],
+      EcopetrolEnum.GInterest,
     );
     const dataInTimeByDimension = getDataInTime(
       rawData,
-      filters.extraFilters.dimension || [],
-      'dimension',
+      filters.extraFilters[EcopetrolEnum.Dimension] || [],
+      EcopetrolEnum.Dimension,
     );
     const dataByCity = getDataByCity(
-      rawData,
-      [{ accessor: LocationDataKeys.AFFINITY }],
+      rawData as any[],
+      [{ accessor: LocationDataKeys.Affinity }],
       'name',
     ) as MapChartData[];
 
@@ -105,26 +90,9 @@ export class EcopetrolService {
   async findMaterialityData(
     filters: Filters,
   ): Promise<EcopetrolMaterialityResponse> {
-    const { dates, needsPastData, extraFilters } = filters;
+    const query = getMongoQuery(filters, 30, ecopetrolMaterialityQueryKeys);
 
-    const extraFilterKeys = Object.keys(extraFilters);
-    if (!extraFilterKeys.includes('material')) extraFilterKeys.push('material');
-
-    const query: FilterQuery<EcopetrolDocument> = {
-      ...getDateRangeQuery(dates, needsPastData, 30),
-      ...extraFilterKeys.reduce((acc, el) => {
-        if (el === 'material' || el === 'submaterial')
-          acc[el] = getMongoFilter(extraFilters[el], 'array-ne');
-        else if (ecopetrolStringValuesKeys.includes(el))
-          acc[el] = getMongoFilter(extraFilters[el], 'string');
-        else acc[el] = getMongoFilter(extraFilters[el]);
-
-        if (!acc[el]) delete acc[el];
-        return acc;
-      }, {}),
-    };
-
-    const rawData: Ecopetrol[] = await getDBData(
+    const rawData = await getDBData<Ecopetrol>(
       this.ecopetrolModel,
       query,
       undefined,
@@ -132,26 +100,28 @@ export class EcopetrolService {
 
     const dataByGroup = calculateGroupedMetrics(
       rawData,
-      'g_interest',
-      'material',
-      filters.extraFilters.g_interest || [],
-      filters.extraFilters.material || [],
+      EcopetrolEnum.GInterest,
+      EcopetrolEnum.Material,
+      filters.extraFilters[EcopetrolEnum.GInterest] || [],
+      filters.extraFilters[EcopetrolEnum.Material] || [],
     );
 
-    const dataInTimeByGI = getDataInTime(rawData, [], 'g_interest');
+    const dataInTimeByGI = getDataInTime(rawData, [], EcopetrolEnum.GInterest);
 
     const dataInTimeByMateriality = getDataInTime(
       rawData,
-      filters.extraFilters.materials || [],
-      'material',
+      filters.extraFilters[EcopetrolEnum.Material] || [],
+      EcopetrolEnum.Material,
     );
 
-    const dataByMateriality = getDataByMateriality(
+    const dataByMateriality = calculateAffinityMetricsByGroups(
       rawData,
-      filters.extraFilters.material || [],
-      filters.extraFilters.g_interest || [],
+      EcopetrolEnum.GInterest,
+      EcopetrolEnum.Material,
+      filters.extraFilters[EcopetrolEnum.GInterest] || [],
+      filters.extraFilters[EcopetrolEnum.Material] || [],
       dataByGroup,
-    );
+    ) as EcopetrolByMateriality[];
 
     return {
       rawData,

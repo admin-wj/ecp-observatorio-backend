@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs';
 import { DateRange } from '../types/shared.types';
 
 export const getDateRangeQuery = (
@@ -63,3 +64,8 @@ export const getPastDateRange = (startDate: Date, endDate: Date) => {
 
   return { pastStartDate, pastEndDate };
 };
+
+export const getFormattedDate = (date: Date) =>
+  dayjs(date).format('DD/MM/YYYY');
+
+export const getYear = (date: Date) => dayjs(date).format('YYYY');

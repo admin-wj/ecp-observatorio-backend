@@ -9,6 +9,7 @@ import configuration from './config/configuration';
 import { validationSchema } from './config/validation';
 import { DatabaseModule } from './database/database.module';
 import { EcopetrolModule } from './ecopetrol/ecopetrol.module';
+import { PairsModule } from './pairs/pairs.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EcopetrolModule } from './ecopetrol/ecopetrol.module';
       envFilePath: '.env',
     }),
     EcopetrolModule,
+    PairsModule,
     DatabaseModule,
     AuthModule,
   ],

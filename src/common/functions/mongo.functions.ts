@@ -1,15 +1,18 @@
 import { FilterQuery, Model, SortOrder } from 'mongoose';
-import { Filters, QueryParams } from '../types/shared.types';
+
+import { getDateRangeQuery } from './dates.functions';
+import { Filters, QueryKeys, QueryParams } from '../types/shared.types';
 import { defaultParamsKeys } from '../constants/mongodb.constants';
 
-export const getDBData = (
-  model: Model<any>,
+export const getDBData = <T>(
+  model: Model<T>,
   query: FilterQuery<unknown>,
   customSort?: Record<string, SortOrder>,
 ) =>
   model
     .find(query, { embedding_vector: 0 })
     .sort(customSort ?? { timestamp: 1 })
+    .lean<T[]>()
     .exec();
 
 export const parseFilters = (raw: QueryParams): Filters => ({
@@ -28,18 +31,42 @@ export const parseFilters = (raw: QueryParams): Filters => ({
 });
 
 export const getMongoFilter = (
-  value?: string[],
-  type: 'array' | 'array-ne' | 'string' = 'array',
+  value: string[],
+  type: 'array' | 'array-ne' | 'string' | 'string-ne' = 'array',
 ) => {
-  if (value && value.length) {
-    if (type === 'array') {
-      return { $elemMatch: { $in: value } };
-    } else if (type === 'array-ne') {
-      return { $elemMatch: { $in: value }, $ne: null };
-    } else {
-      return { $in: value };
-    }
+  if (!value || value.length === 0) return { $ne: null };
+  if (type === 'array') {
+    return { $elemMatch: { $in: value } };
   } else if (type === 'array-ne') {
-    return { $ne: null };
+    return { $elemMatch: { $in: value }, $ne: null };
+  } else {
+    return { $in: value };
   }
+};
+
+export const getMongoQuery = (
+  filters: Filters,
+  defaultDateRange: number,
+  keys: QueryKeys,
+): FilterQuery<unknown> => {
+  const { dates, needsPastData, extraFilters } = filters;
+  const { main, arrayNotEmpty, stringsNotEmpty, strings } = keys;
+  const extraFilterKeys = Object.keys(extraFilters);
+  if (main && !extraFilterKeys.includes(main)) extraFilterKeys.push(main);
+
+  return {
+    ...getDateRangeQuery(dates, needsPastData, defaultDateRange),
+    ...extraFilterKeys.reduce((acc, el) => {
+      if (arrayNotEmpty?.includes(el))
+        acc[el] = getMongoFilter(extraFilters[el], 'array-ne');
+      else if (stringsNotEmpty?.includes(el))
+        acc[el] = getMongoFilter(extraFilters[el], 'string-ne');
+      else if (strings?.includes(el))
+        acc[el] = getMongoFilter(extraFilters[el], 'string');
+      else acc[el] = getMongoFilter(extraFilters[el]);
+
+      if (!acc[el]) delete acc[el];
+      return acc;
+    }, {}),
+  };
 };
