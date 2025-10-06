@@ -31,6 +31,6 @@ export const getDataByRanking = (data: PairsRanking[], pairs: string[]) => {
 
       return acc;
     },
-    [] as Record<string, any>[],
+    [] as Record<string, unknown>[],
   );
 };

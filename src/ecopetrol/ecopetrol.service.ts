@@ -69,8 +69,8 @@ export class EcopetrolService {
       filters.extraFilters[EcopetrolEnum.Dimension] || [],
       EcopetrolEnum.Dimension,
     );
-    const dataByCity = getDataByCity(
-      rawData as any[],
+    const dataByCity = getDataByCity<Ecopetrol>(
+      rawData,
       [{ accessor: LocationDataKeys.Affinity }],
       'name',
     ) as MapChartData[];

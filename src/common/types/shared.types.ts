@@ -1,3 +1,5 @@
+import { LocationDataKeys } from "../enums";
+
 export type QueryParams = Record<string, string | string[] | undefined>;
 
 export type QueryKeys = {
@@ -35,6 +37,12 @@ export type AffinityMetricsByGroups<
 export type DataEntry = {
   x?: string;
 } & Record<Exclude<string, 'x'>, number>;
+
+export type DataWithLocation<T> = {
+  location: string;
+} & T;
+
+export type AccessorData = { accessor?: LocationDataKeys; name?: string };
 
 export type MapChartData = {
   name: string;

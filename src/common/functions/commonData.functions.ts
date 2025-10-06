@@ -4,14 +4,13 @@ import { PairsAffinity } from 'src/pairs/pairs.schema';
 import { getFormattedDate } from './dates.functions';
 
 import { locations } from '../constants';
-import { LocationDataKeys } from '../enums';
-import { DataEntry, LocationInfo, MapChartData } from '../types';
-
-export type DataWithLocation = {
-  location: string;
-} & Record<string, unknown>;
-
-type AccessorData = { accessor?: LocationDataKeys; name?: string };
+import {
+  AccessorData,
+  DataEntry,
+  DataWithLocation,
+  LocationInfo,
+  MapChartData,
+} from '../types';
 
 export const calculateGroupedMetrics = (
   data: Ecopetrol[] | PairsAffinity[],
@@ -316,8 +315,8 @@ export const getDataInTime = (
   );
 };
 
-export const getDataByCity = (
-  data: DataWithLocation[],
+export const getDataByCity = <T>(
+  data: DataWithLocation<T>[],
   accessors: AccessorData[] = [{}],
   compareValue: 'name' | 'state' = 'name',
 ) =>
