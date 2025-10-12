@@ -3,7 +3,9 @@ import {
   EcopetrolEnum,
   PairsAffinityEnum,
   PairsRankingEnum,
+  VTTEnum,
 } from '../enums';
+import { QueryKeys } from '../types';
 
 export const defaultParamsKeys = ['startDate', 'endDate', 'needsPastData'];
 
@@ -13,28 +15,29 @@ export const ecopetrolStringKeys = [
   EcopetrolEnum.SourceCategory,
 ];
 
-export const ecopetrolAffinityQueryKeys = {
+// Query Keys:
+export const ecopetrolAffinityQueryKeys: QueryKeys = {
   main: EcopetrolEnum.Dimension,
   arrayNotEmpty: [EcopetrolEnum.Dimension],
   stringsNotEmpty: [],
   strings: ecopetrolStringKeys,
 };
 
-export const ecopetrolMaterialityQueryKeys = {
+export const ecopetrolMaterialityQueryKeys: QueryKeys = {
   main: EcopetrolEnum.Material,
   arrayNotEmpty: [EcopetrolEnum.Material, EcopetrolEnum.Submaterial],
   stringsNotEmpty: [],
   strings: ecopetrolStringKeys,
 };
 
-export const pairsAffinityQueryKeys = {
+export const pairsAffinityQueryKeys: QueryKeys = {
   main: PairsAffinityEnum.Pair,
   arrayNotEmpty: [],
   stringsNotEmpty: [PairsAffinityEnum.Pair],
   strings: [PairsAffinityEnum.SourceType, PairsAffinityEnum.SourceCategory],
 };
 
-export const pairsRankingQueryKeys = {
+export const pairsRankingQueryKeys: QueryKeys = {
   main: undefined,
   arrayNotEmpty: [],
   stringsNotEmpty: [],
@@ -43,4 +46,33 @@ export const pairsRankingQueryKeys = {
     PairsRankingEnum.RankingOrg,
     PairsRankingEnum.RankingName,
   ],
+};
+
+export const vttNewsQueryKeys: QueryKeys = {
+  main: undefined,
+  arrayNotEmpty: [],
+  stringsNotEmpty: [],
+  strings: [
+    CommonMongoKeys.Location,
+    VTTEnum.Relevance,
+    CommonMongoKeys.Polarity,
+  ],
+};
+
+export const vttDemandsQueryKeys: QueryKeys = {
+  main: VTTEnum.ClaimType,
+  arrayNotEmpty: [VTTEnum.ClaimType],
+  stringsNotEmpty: [],
+  strings: [
+    CommonMongoKeys.Location,
+    VTTEnum.Relevance,
+    CommonMongoKeys.Polarity,
+  ],
+};
+
+export const vttDailyQueryKeys: QueryKeys = {
+  main: undefined,
+  arrayNotEmpty: [],
+  stringsNotEmpty: [],
+  strings: [],
 };

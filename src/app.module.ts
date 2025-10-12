@@ -10,6 +10,7 @@ import { validationSchema } from './config/validation';
 import { DatabaseModule } from './database/database.module';
 import { EcopetrolModule } from './ecopetrol/ecopetrol.module';
 import { PairsModule } from './pairs/pairs.module';
+import { VTTModule } from './vtt/vtt.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PairsModule } from './pairs/pairs.module';
     }),
     EcopetrolModule,
     PairsModule,
+    VTTModule,
     DatabaseModule,
     AuthModule,
   ],
