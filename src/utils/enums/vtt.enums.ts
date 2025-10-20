@@ -1,0 +1,14 @@
+export enum VTTEnum {
+  Component = 'component',
+  Subcomponent = 'subcomponent',
+  InfoType = 'info_type',
+  Relevance = 'relevance',
+  VTTActor = 'vtt_actor',
+  Title = 'title',
+  Summary = 'summary',
+  ClaimType = 'claim_type',
+  ClaimActor = 'claim_actor',
+  ClaimEntity = 'claim_entity',
+  ClaimMotive = 'claim_motive',
+  ClaimMotiveAbb = 'claim_motive_abb',
+}
