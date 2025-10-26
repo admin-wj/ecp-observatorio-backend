@@ -1,4 +1,6 @@
-import { LocationDataKeys } from "../enums";
+import { FilterQuery } from 'mongoose';
+
+import { LocationDataKeys, Polarity } from '../enums';
 
 export type QueryParams = Record<string, string | string[] | undefined>;
 
@@ -15,10 +17,43 @@ export type Filters = {
   extraFilters: Record<string, string[]>;
 };
 
+export type WithCount<T> = T & {
+  count: number;
+};
+
+export type ResponseBase<T, K> = WithCount<{
+  rawData: T[];
+  fullQuery: FilterQuery<T>;
+}> &
+  K;
+
 export type DateRange = {
   startDate?: string;
   endDate?: string;
 };
+
+export type DataEntry = {
+  x?: string;
+} & Record<Exclude<string, 'x'>, number>;
+
+export type DataWithLocation<T> = {
+  location: string;
+} & T;
+
+export type AccessorData = { accessor?: LocationDataKeys; name?: string };
+
+export type MapChartData = WithCount<{
+  name: string;
+  state?: string;
+  value: number;
+  coordinates: number[];
+}>;
+
+export type LocationInfo = {
+  name: string;
+  state: string;
+  coordinates: number[];
+} | null;
 
 export type AffinityMetricsByGroups<
   T extends string = never,
@@ -34,26 +69,17 @@ export type AffinityMetricsByGroups<
   [key in K]: string[];
 };
 
-export type DataEntry = {
-  x?: string;
-} & Record<Exclude<string, 'x'>, number>;
+export type BaseAffinitySummary = WithCount<{
+  affinity: {
+    [Polarity.Negative]: number;
+    [Polarity.Neutral]: number;
+    [Polarity.Positive]: number;
+  };
+}>;
 
-export type DataWithLocation<T> = {
-  location: string;
-} & T;
+export type SummaryWithKeys<TKeys extends {}> = BaseAffinitySummary & TKeys;
 
-export type AccessorData = { accessor?: LocationDataKeys; name?: string };
-
-export type MapChartData = {
-  name: string;
-  state?: string;
-  value: number;
-  count: number;
-  coordinates: number[];
-};
-
-export type LocationInfo = {
-  name: string;
-  state: string;
-  coordinates: number[];
-} | null;
+export type KeyValueCount<TKeys extends {}> = WithCount<{
+  id: string;
+}> &
+  TKeys;

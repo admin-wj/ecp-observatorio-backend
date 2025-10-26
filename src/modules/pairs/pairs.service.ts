@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   calculateAffinityMetricsByGroups,
   calculateGroupedMetrics,
+  CommonMongoKeys,
   Filters,
   getDataByRanking,
   getDataInTime,
@@ -51,13 +52,13 @@ export class PairsService {
       rawData,
       filters.extraFilters[PairsAffinityEnum.Pair],
       PairsAffinityEnum.Pair,
+      CommonMongoKeys.Affinity,
     );
 
     const dataInTimeByTexts = getDataInTime<PairsAffinity>(
       rawData,
       filters.extraFilters[PairsAffinityEnum.Pair] || [],
       PairsAffinityEnum.Pair,
-      'count',
     );
 
     const dataByPairs = calculateAffinityMetricsByGroups<PairsAffinity>(

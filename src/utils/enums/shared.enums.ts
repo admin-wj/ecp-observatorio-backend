@@ -1,3 +1,5 @@
+import { TrendsHumanRightsEnum } from './trends.enums';
+
 export enum MongoCollections {
   Ecopetrol = 'df_ecp',
   Locations = 'locations',
@@ -31,6 +33,6 @@ export enum Polarity {
 
 export enum LocationDataKeys {
   Affinity = CommonMongoKeys.Affinity,
-  Impact = 'impact_index',
-  Risk = 'risk_index',
+  Impact = TrendsHumanRightsEnum.ImpactIndex,
+  Risk = TrendsHumanRightsEnum.RiskIndex,
 }

@@ -1,19 +1,8 @@
 import { FilterQuery } from 'mongoose';
 
-import { MapChartData } from './shared.types';
-import { Polarity, VTTEnum } from '../enums';
+import { MapChartData, ResponseBase, SummaryWithKeys } from './shared.types';
+import { VTTEnum } from '../enums';
 import { VTTNews } from '../../modules/vtt/vtt.schema';
-
-export type BaseAffinitySummary = {
-  affinity: {
-    [Polarity.Negative]: number;
-    [Polarity.Neutral]: number;
-    [Polarity.Positive]: number;
-  };
-  total: number;
-};
-
-export type SummaryWithKeys<TKeys extends {}> = BaseAffinitySummary & TKeys;
 
 export type ComponentSummary = SummaryWithKeys<{
   id: string;
@@ -26,20 +15,20 @@ export type ActorSummary = SummaryWithKeys<{
   [VTTEnum.ClaimActor]: string[];
 }>;
 
-export type VTTNewsResponse = {
-  rawData: VTTNews[];
-  dataByComp: ComponentSummary[];
-  fullQuery: FilterQuery<VTTNews>;
-  count: number;
-};
+export type VTTNewsResponse = ResponseBase<
+  VTTNews,
+  {
+    dataByComp: ComponentSummary[];
+  }
+>;
 
-export type VTTDemandsResponse = {
-  rawData: VTTNews[];
-  dataByActor: ActorSummary[];
-  dataByCity: MapChartData[];
-  fullQuery: FilterQuery<VTTNews>;
-  count: number;
-};
+export type VTTDemandsResponse = ResponseBase<
+  VTTNews,
+  {
+    dataByActor: ActorSummary[];
+    dataByCity: MapChartData[];
+  }
+>;
 
 export type VTTDailyResponse = {
   fullQuery: FilterQuery<VTTNews>;

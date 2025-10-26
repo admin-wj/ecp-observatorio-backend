@@ -49,9 +49,9 @@ export const getVTTGroupedData = <
             [Polarity.Neutral]: 0,
             [Polarity.Positive]: 0,
           },
-          total: 0,
+          count: 0,
           ...(secondaryKey ? { [secondaryKey as string]: [] as string[] } : {}),
-        } as SummaryWithKeys<
+        } as unknown as SummaryWithKeys<
           TSecondary extends VTTStringArrayKeys
             ? { [K in TSecondary]: string[] }
             : {}
@@ -71,14 +71,14 @@ export const getVTTGroupedData = <
 
       if (group) {
         group.affinity[polarity]++;
-        group.total++;
+        group.count++;
       }
     });
   });
 
   return Array.from(groupedData.entries())
     .map(([primaryData, mapData], i) => {
-      const { affinity, total } = mapData;
+      const { affinity, count } = mapData;
       return {
         id: i.toString(),
         [primaryKey]: primaryData,
@@ -91,8 +91,8 @@ export const getVTTGroupedData = <
             }
           : {}),
         affinity,
-        total,
+        count,
       };
     })
-    .sort((a, b) => b.total - a.total) as ComponentSummary[] | ActorSummary[];
+    .sort((a, b) => b.count - a.count) as ComponentSummary[] | ActorSummary[];
 };

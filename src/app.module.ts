@@ -11,6 +11,7 @@ import { validationSchema } from './config/validation';
 import { DatabaseModule } from './database/database.module';
 import { EcopetrolModule } from './modules/ecopetrol/ecopetrol.module';
 import { PairsModule } from './modules/pairs/pairs.module';
+import { TrendsModule } from './modules/trends/trends.module';
 import { VTTModule } from './modules/vtt/vtt.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { VTTModule } from './modules/vtt/vtt.module';
     }),
     EcopetrolModule,
     PairsModule,
+    TrendsModule,
     VTTModule,
     DatabaseModule,
     AuthModule,

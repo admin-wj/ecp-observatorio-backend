@@ -20,6 +20,7 @@ import {
   LocationDataKeys,
   MapChartData,
   MongoCollections,
+  CommonMongoKeys,
 } from 'src/utils';
 
 import { Ecopetrol } from './ecopetrol.schema';
@@ -61,19 +62,19 @@ export class EcopetrolService {
       rawData,
       filters.extraFilters[EcopetrolEnum.GInterest] || [],
       EcopetrolEnum.GInterest,
+      CommonMongoKeys.Affinity,
     );
 
     const dataInTimeByDimension = getDataInTime<Ecopetrol>(
       rawData,
       filters.extraFilters[EcopetrolEnum.Dimension] || [],
       EcopetrolEnum.Dimension,
+      CommonMongoKeys.Affinity,
     );
 
-    const dataByCity = getDataByCity<Ecopetrol>(
-      rawData,
-      [{ accessor: LocationDataKeys.Affinity }],
-      'name',
-    ) as MapChartData[];
+    const dataByCity = getDataByCity<Ecopetrol>(rawData, [
+      { accessor: LocationDataKeys.Affinity },
+    ]) as MapChartData[];
 
     return {
       rawData,

@@ -4,10 +4,11 @@ import {
   AccessorData,
   DataEntry,
   DataWithLocation,
+  KeyValueCount,
   LocationInfo,
   MapChartData,
 } from '../types';
-import { CommonMongoKeys } from '../enums';
+import { CommonMongoKeys, TrendsHumanRightsEnum } from '../enums';
 
 export const calculateGroupedMetrics = <T>(
   data: T[],
@@ -15,6 +16,7 @@ export const calculateGroupedMetrics = <T>(
   secondaryGroupKey: keyof T,
   primaryFilterValues: string[],
   secondaryFilterValues: string[],
+  isSimpleValue: boolean = false,
 ) => {
   const groupedMetrics = new Map<string, Map<string, number>>();
   const uniquePrimaryGroups = new Set<string>();
@@ -94,17 +96,20 @@ export const calculateGroupedMetrics = <T>(
     .map((row: Record<string, number>) => {
       return Object.keys(row).reduce((acc: Record<string, unknown>, key) => {
         if (key === 'id') acc[key] = row[key];
-        if (key.includes('_T')) {
+        else if (key.includes('_T')) {
           const metricKey = key.split('_T')[0];
 
-          if (secondaryFilterValues.length) {
-            if (
+          if (isSimpleValue) {
+            acc[metricKey] = row[key];
+          } else {
+            const shouldCalculate =
+              !secondaryFilterValues.length ||
               secondaryFilterValues.includes(metricKey) ||
-              metricKey === 'General'
-            )
+              metricKey === 'General';
+
+            if (shouldCalculate)
               acc[metricKey] = Number((row[metricKey] / row[key]).toFixed(2));
-          } else
-            acc[metricKey] = Number((row[metricKey] / row[key]).toFixed(2));
+          }
         }
         return acc;
       }, {});
@@ -207,7 +212,7 @@ export const getDataInTime = <T>(
   data: T[],
   accessorList: string[],
   dataAccessor: keyof T,
-  mode: 'affinity' | 'count' = 'affinity',
+  key?: keyof T,
 ) => {
   const allAccessors: string[] = accessorList?.length
     ? accessorList
@@ -215,7 +220,7 @@ export const getDataInTime = <T>(
         new Set(data.flatMap((d) => (d[dataAccessor] as string[]) ?? [])),
       );
 
-  const formattedData = data.reduce((acc, el) => {
+  const formattedData = data.reduce((acc, el, i) => {
     const date = getFormattedDate(el[CommonMongoKeys.Timestamp]);
 
     if (acc.length && acc[acc.length - 1].x === date) {
@@ -224,11 +229,18 @@ export const getDataInTime = <T>(
           Array.isArray(el[dataAccessor]) &&
           el[dataAccessor].includes(accessor)
         ) {
-          if (mode === 'affinity') {
-            acc[acc.length - 1][accessor] += el[CommonMongoKeys.Affinity];
+          if (key) {
+            if (Array.isArray(el[key])) {
+              const dataIndex = el[dataAccessor].findIndex(
+                (value) => value === accessor,
+              );
+              acc[acc.length - 1][accessor] += el[key][dataIndex] as number;
+            } else {
+              acc[acc.length - 1][accessor] += el[key] as number;
+            }
             acc[acc.length - 1][`${accessor}_count`] =
               (acc[acc.length - 1][`${accessor}_count`] ?? 0) + 1;
-          } else if (mode === 'count') {
+          } else {
             acc[acc.length - 1][accessor] =
               (acc[acc.length - 1][accessor] ?? 0) + 1;
           }
@@ -236,11 +248,11 @@ export const getDataInTime = <T>(
           typeof el[dataAccessor] === 'string' &&
           el[dataAccessor] === accessor
         ) {
-          if (mode === 'affinity') {
-            acc[acc.length - 1][accessor] += el[CommonMongoKeys.Affinity];
+          if (key) {
+            acc[acc.length - 1][accessor] += el[key] as number;
             acc[acc.length - 1][`${accessor}_count`] =
               (acc[acc.length - 1][`${accessor}_count`] ?? 0) + 1;
-          } else if (mode === 'count') {
+          } else {
             acc[acc.length - 1][accessor] =
               (acc[acc.length - 1][accessor] ?? 0) + 1;
           }
@@ -248,9 +260,11 @@ export const getDataInTime = <T>(
       });
     } else {
       acc.push({
-        ...Object.fromEntries(allAccessors.map((key) => [key, 0])),
-        ...(mode === 'affinity'
-          ? Object.fromEntries(allAccessors.map((key) => [`${key}_count`, 0]))
+        ...Object.fromEntries(allAccessors.map((accessor) => [accessor, 0])),
+        ...(key
+          ? Object.fromEntries(
+              allAccessors.map((accessor) => [`${accessor}_count`, 0]),
+            )
           : {}),
       });
       acc[acc.length - 1].x = date;
@@ -259,20 +273,27 @@ export const getDataInTime = <T>(
           Array.isArray(el[dataAccessor]) &&
           el[dataAccessor].includes(accessor)
         ) {
-          if (mode === 'affinity') {
-            acc[acc.length - 1][accessor] = el[CommonMongoKeys.Affinity];
+          if (key) {
+            if (Array.isArray(el[key])) {
+              const dataIndex = el[dataAccessor].findIndex(
+                (value) => value === accessor,
+              );
+              acc[acc.length - 1][accessor] += el[key][dataIndex] as number;
+            } else {
+              acc[acc.length - 1][accessor] = el[key] as number;
+            }
             acc[acc.length - 1][`${accessor}_count`] = 1;
-          } else if (mode === 'count') {
+          } else {
             acc[acc.length - 1][accessor] = 1;
           }
         } else if (
           typeof el[dataAccessor] === 'string' &&
           el[dataAccessor] === accessor
         ) {
-          if (mode === 'affinity') {
-            acc[acc.length - 1][accessor] = el[CommonMongoKeys.Affinity];
+          if (key) {
+            acc[acc.length - 1][accessor] = el[key] as number;
             acc[acc.length - 1][`${accessor}_count`] = 1;
-          } else if (mode === 'count') {
+          } else {
             acc[acc.length - 1][accessor] = 1;
           }
         }
@@ -282,7 +303,7 @@ export const getDataInTime = <T>(
     return acc;
   }, [] as DataEntry[]);
 
-  if (mode === 'affinity') {
+  if (key) {
     return formattedData.map(
       (entry) =>
         ({
@@ -314,6 +335,7 @@ export const getDataByCity = <T>(
   data: DataWithLocation<T>[],
   accessors: AccessorData[] = [{}],
   compareValue: 'name' | 'state' = 'name',
+  filters?: string[],
 ) =>
   data.reduce(
     (acc, el) => {
@@ -332,6 +354,14 @@ export const getDataByCity = <T>(
 
           if (typeof value === 'number') {
             valueSum = value;
+          } else if (filters && filters.length) {
+            valueSum = el[TrendsHumanRightsEnum.HumanRight].reduce(
+              (acc, el, i) => {
+                if (filters.includes(el)) acc += value[i];
+                return acc;
+              },
+              0,
+            );
           } else if (Array.isArray(value)) {
             valueSum = value.reduce((a, b) => a + b, 0);
           }
@@ -374,4 +404,38 @@ export const getCityData = (location: string): LocationInfo => {
   }
 
   return null;
+};
+
+export const getDataCountByKey = <T>(
+  data: T[],
+  arrayFilter: string[],
+  primaryKey: keyof T,
+  additionalFilter?: {
+    key: keyof T;
+    filter: string;
+  },
+) => {
+  const keysToCount: string[] = arrayFilter.length
+    ? arrayFilter
+    : Array.from(
+        new Set(data.flatMap((d) => (d[primaryKey] as string[]) ?? [])),
+      );
+
+  return keysToCount.map((keyValue) => {
+    const count = data.filter((el) => {
+      const primaryMatches = (el[primaryKey] as string[])?.includes(keyValue);
+      const additionalMatches = !additionalFilter
+        ? true
+        : (el[additionalFilter.key] as string[])?.includes(
+            additionalFilter.filter,
+          );
+      return primaryMatches && additionalMatches;
+    }).length;
+
+    return {
+      id: keyValue,
+      [primaryKey]: keyValue,
+      count: count,
+    };
+  });
 };

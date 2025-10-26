@@ -15,26 +15,29 @@ export const commonStringKeys = [
   CommonMongoKeys.SourceCategory,
 ];
 
-export const ecopetrolStringKeys = [
+export const commonStringKeysWithLocation = [
   ...commonStringKeys,
   CommonMongoKeys.Location,
 ];
 
-export const trendsStringKeys = [...commonStringKeys, CommonMongoKeys.Entity];
+export const trendsStringKeys = [
+  ...commonStringKeys,
+  CommonMongoKeys.Entity,
+];
 
 // Query Keys:
 export const ecopetrolAffinityQueryKeys: QueryKeys = {
   main: EcopetrolEnum.Dimension,
   arrayNotEmpty: [EcopetrolEnum.Dimension],
   stringsNotEmpty: [],
-  strings: ecopetrolStringKeys,
+  strings: commonStringKeysWithLocation,
 };
 
 export const ecopetrolMaterialityQueryKeys: QueryKeys = {
   main: EcopetrolEnum.Material,
   arrayNotEmpty: [EcopetrolEnum.Material, EcopetrolEnum.Submaterial],
   stringsNotEmpty: [],
-  strings: ecopetrolStringKeys,
+  strings: commonStringKeysWithLocation,
 };
 
 export const pairsAffinityQueryKeys: QueryKeys = {
@@ -66,7 +69,7 @@ export const trendsHumanRightsQueryKeys: QueryKeys = {
   main: TrendsHumanRightsEnum.HumanRight,
   arrayNotEmpty: [TrendsHumanRightsEnum.HumanRight],
   stringsNotEmpty: [],
-  strings: trendsStringKeys,
+  strings: commonStringKeysWithLocation,
 };
 
 export const trendsPeaceQueryKeys: QueryKeys = {
