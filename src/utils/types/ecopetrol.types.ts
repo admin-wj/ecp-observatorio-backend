@@ -7,6 +7,16 @@ import {
 import { EcopetrolEnum } from '../enums';
 import { Ecopetrol } from '../../modules/ecopetrol/ecopetrol.schema';
 
+export type EcopetrolByDimension = AffinityMetricsByGroups<
+  EcopetrolEnum.GInterest,
+  EcopetrolEnum.Dimension
+>;
+
+export type EcopetrolByMateriality = AffinityMetricsByGroups<
+  EcopetrolEnum.GInterest,
+  EcopetrolEnum.Material
+>;
+
 export type EcopetrolAffinityResponse = ResponseBase<
   Ecopetrol,
   {
@@ -28,12 +38,15 @@ export type EcopetrolMaterialityResponse = ResponseBase<
   }
 >;
 
-export type EcopetrolByDimension = AffinityMetricsByGroups<
-  EcopetrolEnum.GInterest,
-  EcopetrolEnum.Dimension
->;
+export type EcopetrolAffinityReport = {
+  dimension_summary: string;
+  ginterest_dimension: Record<string, string[]>;
+  time_analysis: Record<string, string[]>;
+  geographic: string;
+};
 
-export type EcopetrolByMateriality = AffinityMetricsByGroups<
-  EcopetrolEnum.GInterest,
-  EcopetrolEnum.Material
->;
+export type EcopetrolMaterialityReport = {
+  material_summary: string;
+  ginterest_material: Record<string, string[]>;
+  time_analysis: Record<string, string[]>;
+};

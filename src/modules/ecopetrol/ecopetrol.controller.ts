@@ -5,18 +5,20 @@ import {
   EcopetrolAffinityResponse,
   EcopetrolMaterialityResponse,
   Filters,
+  MainPathEndpoint,
   parseFilters,
   QueryParams,
+  SubPathEndpoint,
 } from 'src/utils';
 
 import { EcopetrolService } from './ecopetrol.service';
 
-@Controller('api/ecopetrol')
+@Controller(MainPathEndpoint.Ecopetrol)
 export class EcopetrolController {
   constructor(private readonly ecopetrolService: EcopetrolService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('affinity')
+  @Get(SubPathEndpoint.Affinity)
   async getAffinityData(
     @Query() query: QueryParams,
   ): Promise<EcopetrolAffinityResponse> {
@@ -26,7 +28,7 @@ export class EcopetrolController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('materiality')
+  @Get(SubPathEndpoint.Materiality)
   async getMaterialityData(
     @Query() query: Record<string, string | string[]>,
   ): Promise<EcopetrolMaterialityResponse> {

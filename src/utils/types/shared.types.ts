@@ -17,6 +17,11 @@ export type Filters = {
   extraFilters: Record<string, string[]>;
 };
 
+export type FiltersValues = {
+  startDate?: Date;
+  endDate?: Date;
+} & Record<Exclude<string, 'startDate' | 'endDate'>, string[]>;
+
 export type WithCount<T> = T & {
   count: number;
 };

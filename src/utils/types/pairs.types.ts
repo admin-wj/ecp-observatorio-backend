@@ -27,3 +27,13 @@ export type PairsRankingResponse = ResponseBase<
     dataByRanking: Record<string, unknown>[];
   }
 >;
+
+export type PairsAffinityReport = {
+  peer_summary: string;
+  peer_dimension: Record<string, string[]>;
+  time_analysis: Record<string, string[]>;
+};
+
+export type PairsRankingReport = {
+  ranking_summary: string;
+};

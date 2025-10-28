@@ -69,3 +69,83 @@ export type TrendsPeaceResponse = ResponseBase<
     dataByCity: MapChartData[];
   }
 >;
+
+export type TrendsHumanRightsReport = {
+  risk_impact_summary: {
+    analysis: {
+      right: string;
+      risk_level?: string;
+      impact_level?: string;
+      explanation: string;
+      examples: {
+        event: string;
+        description: string;
+      }[];
+    }[];
+  };
+  geographic_summary: {
+    analysis: {
+      region: string;
+      risk_level: string;
+      impact_level: string;
+      contributing_factors: string[];
+      examples: {
+        event: string;
+        description: string;
+      }[];
+    }[];
+  };
+  critical_topics: {
+    analysis: {
+      right: string;
+      critical_issues: {
+        topic: string;
+        description: string;
+        risk_indicator: string;
+        impact_indicator: string;
+        example: string;
+      }[];
+    }[];
+  };
+  risk_impact_time_analysis: {
+    risk_time_analysis: {
+      human_right: string;
+      risk_evolution: string;
+      critical_moments: {
+        highest_risk: {
+          period: string;
+          explanation: string;
+        };
+        lowest_risk: {
+          period: string;
+          explanation: string;
+        };
+      };
+      key_factors: string[];
+      representative_example: string;
+    }[];
+    impact_time_analysis: {
+      human_right: string;
+      impact_evolution: string;
+      critical_moments: {
+        highest_risk: {
+          period: string;
+          explanation: string;
+        };
+        lowest_risk: {
+          period: string;
+          explanation: string;
+        };
+      };
+      key_factors: string[];
+      representative_example: string;
+    }[];
+  };
+};
+
+export type TrendsPeaceReport = {
+  peace_sector: Record<string, string[]>;
+  dialogue_summary: string;
+  location_summary: Record<string, string[]>;
+  peace_actor_summary: Record<string, string[]>;
+};

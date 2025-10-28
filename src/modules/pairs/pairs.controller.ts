@@ -3,20 +3,22 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import {
   Filters,
+  MainPathEndpoint,
   PairsAffinityResponse,
   PairsRankingResponse,
   parseFilters,
   QueryParams,
+  SubPathEndpoint,
 } from 'src/utils';
 
 import { PairsService } from './pairs.service';
 
-@Controller('api/pairs')
+@Controller(MainPathEndpoint.Pairs)
 export class PairsController {
   constructor(private readonly pairsService: PairsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('affinity')
+  @Get(SubPathEndpoint.Affinity)
   async getAffinityData(
     @Query() query: QueryParams,
   ): Promise<PairsAffinityResponse> {
@@ -26,7 +28,7 @@ export class PairsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('ranking')
+  @Get(SubPathEndpoint.Ranking)
   async getRankingData(
     @Query() query: Record<string, string | string[]>,
   ): Promise<PairsRankingResponse> {

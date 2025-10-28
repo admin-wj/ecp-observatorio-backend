@@ -3,8 +3,10 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import {
   Filters,
+  MainPathEndpoint,
   parseFilters,
   QueryParams,
+  SubPathEndpoint,
   TrendsGeneralResponse,
   TrendsHumanRightsResponse,
   TrendsPeaceResponse,
@@ -12,12 +14,12 @@ import {
 
 import { TrendsService } from './trends.service';
 
-@Controller('api/trends')
+@Controller(MainPathEndpoint.Trends)
 export class TrendsController {
   constructor(private readonly trendsService: TrendsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('general')
+  @Get(SubPathEndpoint.General)
   async getGeneralData(
     @Query() query: QueryParams,
   ): Promise<TrendsGeneralResponse> {
@@ -27,7 +29,7 @@ export class TrendsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('human-rights')
+  @Get(SubPathEndpoint.Human_Rights)
   async getHumanRightsData(
     @Query() query: Record<string, string | string[]>,
   ): Promise<TrendsHumanRightsResponse> {
@@ -38,7 +40,7 @@ export class TrendsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('peace')
+  @Get(SubPathEndpoint.Peace)
   async getPeaceData(
     @Query() query: Record<string, string | string[]>,
   ): Promise<TrendsPeaceResponse> {

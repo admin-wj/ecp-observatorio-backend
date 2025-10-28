@@ -1,6 +1,7 @@
 import * as dayjs from 'dayjs';
 
 import { DateRange } from '../types/shared.types';
+import { RAGEndpoints } from '../enums';
 
 export const getDateRangeQuery = (
   dateQuery?: DateRange,
@@ -69,4 +70,103 @@ export const getPastDateRange = (startDate: Date, endDate: Date) => {
 export const getFormattedDate = (date: Date) =>
   dayjs(date).format('DD/MM/YYYY');
 
-export const getYear = (date: Date) => dayjs(date).format('YYYY');
+export const getFileFormattedDate = (date: Date) =>
+  dayjs(date).format('DD_MM_YYYY_HH_mm_ss');
+
+export const getYear = (date: Date) => (date ? dayjs(date).format('YYYY') : '');
+
+export const getReportDates = (endpoint: RAGEndpoints): DateRange => {
+  switch (endpoint) {
+    case RAGEndpoints.Pairs_Ranking:
+      return getReportDateRange('year');
+    case RAGEndpoints.VTT_News:
+      return getReportDateRange('week');
+    case RAGEndpoints.VTT_Demands:
+      return getReportDateRange('week');
+    case RAGEndpoints.VTT_Daily:
+      return getReportDateRange('day');
+    default:
+      return getReportDateRange();
+  }
+};
+
+export const getReportDateRange = (
+  rangeType: 'day' | 'week' | 'month' | 'year' = 'month',
+): DateRange => {
+  const now = new Date();
+
+  switch (rangeType) {
+    case 'day':
+      return {
+        startDate: new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDay() - 1,
+          0,
+          0,
+          0,
+        ).toISOString(),
+        endDate: new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDay() - 1,
+          23,
+          59,
+          59,
+        ).toISOString(),
+      };
+
+    case 'week':
+      return {
+        startDate: new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDay() - 7,
+          0,
+          0,
+          0,
+        ).toISOString(),
+        endDate: new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDay() - 1,
+          23,
+          59,
+          59,
+        ).toISOString(),
+      };
+
+    case 'year':
+      return {
+        startDate: new Date(now.getFullYear() - 1, 0, 1, 0, 0, 0).toISOString(),
+        endDate: new Date(
+          now.getFullYear() - 1,
+          11,
+          31,
+          23,
+          59,
+          59,
+        ).toISOString(),
+      };
+
+    default:
+      return {
+        startDate: new Date(
+          now.getFullYear(),
+          now.getMonth() - 1,
+          1,
+          0,
+          0,
+          0,
+        ).toISOString(),
+        endDate: new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          0,
+          23,
+          59,
+          59,
+        ).toISOString(),
+      };
+  }
+};
