@@ -80,6 +80,7 @@ export type BaseAffinitySummary = WithCount<{
     [Polarity.Neutral]: number;
     [Polarity.Positive]: number;
   };
+  similarity_vtt: number;
 }>;
 
 export type SummaryWithKeys<TKeys extends {}> = BaseAffinitySummary & TKeys;

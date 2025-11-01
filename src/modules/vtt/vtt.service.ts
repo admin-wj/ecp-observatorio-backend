@@ -35,7 +35,7 @@ export class VTTService {
 
     const rawData = await getDBData<VTTNews>(this.vttModel, query, {
       timestamp: -1,
-      relevance: 1,
+      similarity_vtt: -1,
     });
 
     const dataByComp = getVTTGroupedData<
@@ -62,7 +62,7 @@ export class VTTService {
 
     const rawData = await getDBData<VTTNews>(this.vttModel, query, {
       timestamp: -1,
-      relevance: 1,
+      similarity_vtt: -1,
     });
 
     const dataByActor = getVTTGroupedData<VTTEnum.ClaimActor, undefined>(

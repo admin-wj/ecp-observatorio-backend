@@ -20,6 +20,7 @@ export class VTTNews {
   @Prop({ enum: Polarity }) [CommonMongoKeys.Polarity]: Polarity;
   @Prop() [CommonMongoKeys.Affinity]: number;
   @Prop() [VTTEnum.Relevance]: string;
+  @Prop() [VTTEnum.SimilarityVTT]: number;
   @Prop() [CommonMongoKeys.Entity]: string;
   @Prop([String]) [VTTEnum.VTTActor]: string[];
   @Prop() [VTTEnum.Title]: string;

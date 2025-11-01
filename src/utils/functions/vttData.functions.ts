@@ -1,6 +1,6 @@
 import { VTTNews } from 'src/modules/vtt/vtt.schema';
 
-import { Polarity } from '../enums';
+import { Polarity, VTTEnum } from '../enums';
 import {
   ActorSummary,
   ComponentSummary,
@@ -49,6 +49,7 @@ export const getVTTGroupedData = <
             [Polarity.Neutral]: 0,
             [Polarity.Positive]: 0,
           },
+          similarity_vtt: d[VTTEnum.SimilarityVTT],
           count: 0,
           ...(secondaryKey ? { [secondaryKey as string]: [] as string[] } : {}),
         } as unknown as SummaryWithKeys<
@@ -71,6 +72,7 @@ export const getVTTGroupedData = <
 
       if (group) {
         group.affinity[polarity]++;
+        group.similarity_vtt += d[VTTEnum.SimilarityVTT];
         group.count++;
       }
     });
@@ -78,7 +80,7 @@ export const getVTTGroupedData = <
 
   return Array.from(groupedData.entries())
     .map(([primaryData, mapData], i) => {
-      const { affinity, count } = mapData;
+      const { affinity, similarity_vtt, count } = mapData;
       return {
         id: i.toString(),
         [primaryKey]: primaryData,
@@ -91,6 +93,7 @@ export const getVTTGroupedData = <
             }
           : {}),
         affinity,
+        similarity_vtt: Number((similarity_vtt / count).toFixed(2)),
         count,
       };
     })

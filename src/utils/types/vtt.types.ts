@@ -8,11 +8,13 @@ export type ComponentSummary = SummaryWithKeys<{
   id: string;
   [VTTEnum.Component]: string;
   [VTTEnum.Subcomponent]: string[];
+  [VTTEnum.SimilarityVTT]: number;
 }>;
 
 export type ActorSummary = SummaryWithKeys<{
   id: string;
   [VTTEnum.ClaimActor]: string;
+  [VTTEnum.SimilarityVTT]: number;
 }>;
 
 type VTTStringArrayValues = Pick<

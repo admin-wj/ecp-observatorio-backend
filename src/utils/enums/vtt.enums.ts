@@ -3,6 +3,7 @@ export enum VTTEnum {
   Subcomponent = 'subcomponent',
   InfoType = 'info_type',
   Relevance = 'relevance',
+  SimilarityVTT = 'similarity_vtt',
   VTTActor = 'vtt_actor',
   Title = 'title',
   Summary = 'summary',
