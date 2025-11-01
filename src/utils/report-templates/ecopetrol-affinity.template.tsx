@@ -1,9 +1,9 @@
-import * as dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
 import { LineChartWidget, ProgressBar } from '../pdf-widgets';
 import { EcopetrolAffinityReport, EcopetrolAffinityResponse } from '../types';
+import { getFormattedDate } from '../functions';
 
 interface EcopetrolAffinityTemplateProps {
   data: EcopetrolAffinityResponse;
@@ -21,11 +21,11 @@ const EcopetrolAffinityTemplate: FC<EcopetrolAffinityTemplateProps> = ({
   const { dimension_summary, ginterest_dimension, geographic, time_analysis } =
     reportData;
 
-  const startDate = dayjs(new Date((fullQuery?.timestamp as any)?.$gte)).format(
-    'DD/MM/YYYY',
+  const startDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$gte),
   );
-  const endDate = dayjs(new Date((fullQuery?.timestamp as any)?.$lte)).format(
-    'DD/MM/YYYY',
+  const endDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$lte),
   );
 
   const affByDim = dataByGroup.find((d) => d.id === 'General');

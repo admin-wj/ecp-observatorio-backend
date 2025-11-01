@@ -1,8 +1,7 @@
-import * as dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
-import { getYear } from '../functions';
+import { getFormattedDate, getYear } from '../functions';
 import { ProgressBar } from '../pdf-widgets';
 import {
   FiltersValues,
@@ -23,11 +22,11 @@ const PairsRankingTemplate: FC<PairsRankingTemplateProps> = ({
 }) => {
   const { dataByRanking, fullQuery, rawData } = data;
 
-  const startDate = dayjs(new Date((fullQuery?.timestamp as any)?.$gte)).format(
-    'DD/MM/YYYY',
+  const startDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$gte),
   );
-  const endDate = dayjs(new Date((fullQuery?.timestamp as any)?.$lte)).format(
-    'DD/MM/YYYY',
+  const endDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$lte),
   );
 
   const pairsRankingList = [

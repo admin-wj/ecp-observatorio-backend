@@ -1,4 +1,3 @@
-import * as dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
@@ -10,6 +9,7 @@ import {
   TrendsHumanRightsReport,
   TrendsHumanRightsResponse,
 } from '../types';
+import { getFormattedDate } from '../functions';
 
 interface TrendsHumanRightsTemplateProps {
   data: TrendsHumanRightsResponse;
@@ -89,11 +89,11 @@ const TrendsHumanRightsTemplate: FC<TrendsHumanRightsTemplateProps> = ({
     risk_impact_time_analysis,
   } = reportData;
 
-  const startDate = dayjs(new Date((fullQuery?.timestamp as any)?.$gte)).format(
-    'DD/MM/YYYY',
+  const startDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$gte),
   );
-  const endDate = dayjs(new Date((fullQuery?.timestamp as any)?.$lte)).format(
-    'DD/MM/YYYY',
+  const endDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$lte),
   );
 
   const riskImpactByHR = findMaxRiskImpactByHR(dataByRiskAndImpact);

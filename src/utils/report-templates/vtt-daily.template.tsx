@@ -1,8 +1,7 @@
-import * as dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
-import { getReportDateRange } from '../functions';
+import { getFormattedDate, getReportDateRange } from '../functions';
 import { VTTDailyReport } from '../types';
 
 interface VTTDailyTemplateProps {
@@ -11,7 +10,9 @@ interface VTTDailyTemplateProps {
 
 const VTTDailyTemplate: FC<VTTDailyTemplateProps> = ({ reportData }) => {
   const { daily_news } = reportData;
-  const date = dayjs(getReportDateRange('day').startDate).format('DD/MM/YYYY');
+  const date = getFormattedDate(
+    new Date(getReportDateRange('day').startDate || ''),
+  );
 
   return (
     <>

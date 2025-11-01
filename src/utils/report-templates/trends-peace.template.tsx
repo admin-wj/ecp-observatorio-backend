@@ -1,4 +1,3 @@
-import * as dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
@@ -7,6 +6,7 @@ import {
   TrendsPeaceReport,
   TrendsPeaceResponse,
 } from '../types';
+import { getFormattedDate } from '../functions';
 
 interface TrendsPeaceTemplateProps {
   data: TrendsPeaceResponse;
@@ -56,11 +56,11 @@ const TrendsPeaceTemplate: FC<TrendsPeaceTemplateProps> = ({
     peace_actor_summary,
   } = reportData;
 
-  const startDate = dayjs(new Date((fullQuery?.timestamp as any)?.$gte)).format(
-    'DD/MM/YYYY',
+  const startDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$gte),
   );
-  const endDate = dayjs(new Date((fullQuery?.timestamp as any)?.$lte)).format(
-    'DD/MM/YYYY',
+  const endDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$lte),
   );
 
   const importantConvAndActor = findImportantConvAndActor(

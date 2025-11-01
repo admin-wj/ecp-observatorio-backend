@@ -1,4 +1,3 @@
-import * as dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
@@ -8,6 +7,7 @@ import {
   PairsAffinityReport,
   PairsAffinityResponse,
 } from '../types';
+import { getFormattedDate } from '../functions';
 
 interface PairsAffinityTemplateProps {
   data: PairsAffinityResponse;
@@ -65,11 +65,11 @@ const PairsAffinityTemplate: FC<PairsAffinityTemplateProps> = ({
   } = data;
   const { peer_summary, peer_dimension, time_analysis } = reportData;
 
-  const startDate = dayjs(new Date((fullQuery?.timestamp as any)?.$gte)).format(
-    'DD/MM/YYYY',
+  const startDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$gte),
   );
-  const endDate = dayjs(new Date((fullQuery?.timestamp as any)?.$lte)).format(
-    'DD/MM/YYYY',
+  const endDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$lte),
   );
 
   const affByPairs = findMinMaxAffinities(dataByPairs);

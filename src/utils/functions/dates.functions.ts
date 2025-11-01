@@ -1,7 +1,10 @@
 import * as dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc.js';
 
 import { DateRange } from '../types/shared.types';
 import { RAGEndpoints } from '../enums';
+
+dayjs.extend(utc);
 
 export const getDateRangeQuery = (
   dateQuery?: DateRange,
@@ -68,12 +71,13 @@ export const getPastDateRange = (startDate: Date, endDate: Date) => {
 };
 
 export const getFormattedDate = (date: Date) =>
-  dayjs(date).format('DD/MM/YYYY');
+  dayjs.utc(date).format('DD/MM/YYYY');
 
 export const getFileFormattedDate = (date: Date) =>
-  dayjs(date).format('DD_MM_YYYY_HH_mm_ss');
+  dayjs.utc(date).format('DD_MM_YYYY_HH_mm_ss');
 
-export const getYear = (date: Date) => (date ? dayjs(date).format('YYYY') : '');
+export const getYear = (date: Date) =>
+  date ? dayjs.utc(date).format('YYYY') : '';
 
 export const getReportDates = (endpoint: RAGEndpoints): DateRange => {
   switch (endpoint) {

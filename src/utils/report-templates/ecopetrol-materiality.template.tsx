@@ -1,4 +1,3 @@
-import * as dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
@@ -7,6 +6,7 @@ import {
   EcopetrolMaterialityReport,
   EcopetrolMaterialityResponse,
 } from '../types';
+import { getFormattedDate } from '../functions';
 
 interface EcopetrolMaterialityTemplateProps {
   data: EcopetrolMaterialityResponse;
@@ -22,11 +22,11 @@ const EcopetrolMaterialityTemplate: FC<EcopetrolMaterialityTemplateProps> = ({
   const { dataByGroup, dataInTimeByMateriality, fullQuery, count } = data;
   const { material_summary, ginterest_material, time_analysis } = reportData;
 
-  const startDate = dayjs(new Date((fullQuery?.timestamp as any)?.$gte)).format(
-    'DD/MM/YYYY',
+  const startDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$gte),
   );
-  const endDate = dayjs(new Date((fullQuery?.timestamp as any)?.$lte)).format(
-    'DD/MM/YYYY',
+  const endDate = getFormattedDate(
+    new Date((fullQuery?.timestamp as any)?.$lte),
   );
 
   const affByDim = dataByGroup.find((d) => d.id === 'General');
