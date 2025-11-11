@@ -1,0 +1,12 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ecp-observatorio
+spec:
+  template:
+    spec:
+      containers:
+        - image: us-central1-docker.pkg.dev/proyecto-goceana/ecp-observatorio-backend/ecp-observatorio-backend:latest
+          env:
+          ports:
+            - containerPort: 3000
