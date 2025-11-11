@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 
 export const generatePDF = async (htmlContent: string) => {
   const browser =
-    await puppeteer.launch(/* {
+    await puppeteer.launch({
     executablePath: "/usr/bin/chromium-browser",
     headless: true,
     args: [
@@ -11,7 +11,7 @@ export const generatePDF = async (htmlContent: string) => {
       "--disable-gpu",
       "--disable-dev-shm-usage",
     ],
-  } */);
+  });
   const page = await browser.newPage();
 
   const styledHtmlContent = `
