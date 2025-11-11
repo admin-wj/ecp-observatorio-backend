@@ -1,5 +1,5 @@
-import * as dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc.js';
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
 
 import { DateRange } from '../types/shared.types';
 import { RAGEndpoints } from '../enums';
