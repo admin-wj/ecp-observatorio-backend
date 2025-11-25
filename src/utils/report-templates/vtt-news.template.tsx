@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
-import { Polarity } from '../enums';
+import { Relevance } from '../enums';
 import { ComponentSummary, VTTNewsReport, VTTNewsResponse } from '../types';
 
 interface VTTNewsTemplateProps {
@@ -92,10 +92,10 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
                   {columns.map((column) => {
                     const value = d[column.field as keyof ComponentSummary];
                     if (column.field === 'affinity') {
-                      const { Positivo, Neutro, Negativo } = value as {
-                        [Polarity.Negative]: number;
-                        [Polarity.Neutral]: number;
-                        [Polarity.Positive]: number;
+                      value as {
+                        [Relevance.Low]: number;
+                        [Relevance.Medium]: number;
+                        [Relevance.High]: number;
                       };
                       const { count } = d;
 
@@ -117,7 +117,10 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
                                 backgroundColor: '#C4D600',
                               }}
                             >
-                              Positivo: {((Positivo / count) * 100).toFixed(0)}{' '}
+                              {Relevance.Low}:{' '}
+                              {((value[Relevance.Low] / count) * 100).toFixed(
+                                0,
+                              )}{' '}
                               %
                             </div>
                             <div
@@ -126,7 +129,12 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
                                 backgroundColor: '#FDD100',
                               }}
                             >
-                              Neutro: {((Neutro / count) * 100).toFixed(0)} %
+                              {Relevance.Medium}:{' '}
+                              {(
+                                (value[Relevance.Medium] / count) *
+                                100
+                              ).toFixed(0)}{' '}
+                              %
                             </div>
                             <div
                               style={{
@@ -135,7 +143,10 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
                                 color: '#FFFFFF',
                               }}
                             >
-                              Negativo: {((Negativo / count) * 100).toFixed(0)}{' '}
+                              {Relevance.High}:{' '}
+                              {((value[Relevance.High] / count) * 100).toFixed(
+                                0,
+                              )}{' '}
                               %
                             </div>
                           </div>

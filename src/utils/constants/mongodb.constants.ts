@@ -20,10 +20,7 @@ export const commonStringKeysWithLocation = [
   CommonMongoKeys.Location,
 ];
 
-export const trendsStringKeys = [
-  ...commonStringKeys,
-  CommonMongoKeys.Entity,
-];
+export const trendsStringKeys = [...commonStringKeys, CommonMongoKeys.Entity];
 
 // Query Keys:
 export const ecopetrolAffinityQueryKeys: QueryKeys = {
@@ -102,6 +99,13 @@ export const vttDemandsQueryKeys: QueryKeys = {
 };
 
 export const vttDailyQueryKeys: QueryKeys = {
+  main: undefined,
+  arrayNotEmpty: [],
+  stringsNotEmpty: [],
+  strings: [],
+};
+
+export const relationshipQueryKeys: QueryKeys = {
   main: undefined,
   arrayNotEmpty: [],
   stringsNotEmpty: [],

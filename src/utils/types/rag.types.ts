@@ -15,14 +15,16 @@ export type RAGReportDto = {
   isWord?: boolean;
 };
 
-export type RAGSummaryResponse = {
-  ragSummaries: Record<string, unknown>;
+export type RAGSendReportDto = {
+  endpoint: RAGEndpoints;
 };
+
+export type RAGSummaryResponse = Record<string, unknown>;
 
 export type RAGReportData = {
   buffer: Buffer;
   filename: string;
   mimeType:
     | 'application/pdf'
-    | 'application/pdfapplication/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 };

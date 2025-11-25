@@ -20,6 +20,7 @@ export class PairsAffinity {
   @Prop() [CommonMongoKeys.TextClean]: string;
   @Prop() [CommonMongoKeys.Url]: string;
   @Prop() [CommonMongoKeys.Location]: string;
+  @Prop() [CommonMongoKeys.LocationId]: string;
   @Prop({ enum: Polarity }) [CommonMongoKeys.Polarity]: Polarity;
   @Prop() [CommonMongoKeys.Affinity]: number;
   @Prop([String]) [PairsAffinityEnum.Dimension]: string[];

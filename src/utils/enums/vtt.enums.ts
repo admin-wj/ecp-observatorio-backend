@@ -13,3 +13,9 @@ export enum VTTEnum {
   ClaimMotive = 'claim_motive',
   ClaimMotiveAbb = 'claim_motive_abb',
 }
+
+export enum Relevance {
+  Low = 'Poco relevante',
+  Medium = 'Relevante',
+  High = 'Altamente relevante',
+}
