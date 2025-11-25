@@ -1,6 +1,6 @@
 import { VTTNews } from 'src/modules/vtt/vtt.schema';
 
-import { Polarity, VTTEnum } from '../enums';
+import { Relevance, VTTEnum } from '../enums';
 import {
   ActorSummary,
   ComponentSummary,
@@ -31,7 +31,7 @@ export const getVTTGroupedData = <
   const secondaryFiltersSet = new Set(secondaryFilters);
 
   data.forEach((d) => {
-    const { polarity } = d;
+    const { relevance } = d;
     const primaryData: string[] = d[primaryKey];
     let secondaryData: string[] = secondaryKey ? d[secondaryKey] : [];
 
@@ -44,10 +44,10 @@ export const getVTTGroupedData = <
       if (!pD || (primaryFilters.length && !primaryFiltersSet.has(pD))) return;
       if (!groupedData.has(pD)) {
         const base = {
-          affinity: {
-            [Polarity.Negative]: 0,
-            [Polarity.Neutral]: 0,
-            [Polarity.Positive]: 0,
+          relevance: {
+            [Relevance.Low]: 0,
+            [Relevance.Medium]: 0,
+            [Relevance.High]: 0,
           },
           similarity_vtt: d[VTTEnum.SimilarityVTT],
           count: 0,
@@ -71,7 +71,7 @@ export const getVTTGroupedData = <
       }
 
       if (group) {
-        group.affinity[polarity]++;
+        group.relevance[relevance]++;
         group.similarity_vtt += d[VTTEnum.SimilarityVTT];
         group.count++;
       }
@@ -80,7 +80,7 @@ export const getVTTGroupedData = <
 
   return Array.from(groupedData.entries())
     .map(([primaryData, mapData], i) => {
-      const { affinity, similarity_vtt, count } = mapData;
+      const { relevance, similarity_vtt, count } = mapData;
       return {
         id: i.toString(),
         [primaryKey]: primaryData,
@@ -92,8 +92,8 @@ export const getVTTGroupedData = <
                 ) || [],
             }
           : {}),
-        affinity,
-        similarity_vtt: Number((similarity_vtt / count).toFixed(2)),
+        relevance,
+        similarity_vtt: Number((similarity_vtt / count).toFixed(0)),
         count,
       };
     })

@@ -259,7 +259,7 @@ const EcopetrolAffinityTemplate: FC<EcopetrolAffinityTemplateProps> = ({
                   {row.name}
                 </td>
                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>
-                  {ProgressBar(Number((row.value / row.count).toFixed(2)))}
+                  {ProgressBar(Number((row.value / row.count).toFixed(0)))}
                 </td>
                 <td style={{ padding: '10px', border: '1px solid #ccc' }}>
                   {row.count}

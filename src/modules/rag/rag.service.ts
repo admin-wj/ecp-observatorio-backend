@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import Mailgun from 'mailgun.js';
 
 import {
   getReportDates,
@@ -11,8 +12,7 @@ import {
   generateWord,
   RAGReportData,
   getFileFormattedDate,
-  SubPathEndpoint,
-  MainPathEndpoint,
+  RAGEndpoints,
 } from 'src/utils';
 
 @Injectable()
@@ -28,10 +28,10 @@ export class RAGService {
       endpoint,
     );
 
-    return { ragSummaries };
+    return ragSummaries;
   }
 
-  async createReport(dto: RAGReportDto): Promise<RAGReportData> {
+  async createReport(dto: RAGReportDto, token: string): Promise<RAGReportData> {
     const {
       data: currentData,
       endpoint,
@@ -42,17 +42,21 @@ export class RAGService {
     } = dto;
 
     let data: any;
+    const getDataURL = (currentParams: string) =>
+      `${process.env.API_URL}${process.env.PORT ? `:${process.env.PORT}` : ''}/api/${endpoint.replaceAll('-', '/')}?${currentParams.toString()}`;
 
     if (currentData) {
       data = currentData;
     } else {
       const currentParams = new URLSearchParams(getReportDates(endpoint));
 
-      const dataResponse = await fetch(
-        `${
-          process.env.API_URL
-        }/api/${endpoint}${`?${currentParams.toString()}`}`,
-      );
+      const dataResponse = await fetch(getDataURL(currentParams.toString()), {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token || '',
+        },
+        cache: 'no-store',
+      });
 
       if (!dataResponse.ok) throw new Error(dataResponse.statusText);
       data = await dataResponse.json();
@@ -74,28 +78,11 @@ export class RAGService {
       };
       if (searchParams) newSearchParams.needs_past_data = 'true';
       const currentParams = new URLSearchParams(newSearchParams as any);
-
-      const token = await fetch(
-        `${process.env.API_URL}${process.env.PORT ? `:${process.env.PORT}` : ''}/api/${MainPathEndpoint.Auth}/${SubPathEndpoint.Get_Token}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ password: process.env.INTERNAL_SECRET }),
+      const dataResponse = await fetch(getDataURL(currentParams.toString()), {
+        headers: {
+          Authorization: token || '',
         },
-      );
-
-      const { access_token } = await token.json();
-
-      const dataResponse = await fetch(
-        `${process.env.API_URL}${process.env.PORT ? `:${process.env.PORT}` : ''}/api/${endpoint.replaceAll('-', '/')}?${currentParams.toString()}`,
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
+      });
 
       if (!dataResponse.ok) throw new Error(dataResponse.statusText);
       pastData = await dataResponse.json();
@@ -118,7 +105,7 @@ export class RAGService {
         buffer,
         filename,
         mimeType:
-          'application/pdfapplication/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       };
     } else {
       const buffer = await generatePDF(htmlContent);
@@ -127,8 +114,114 @@ export class RAGService {
         buffer,
         filename,
         mimeType:
-          'application/pdfapplication/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/pdf',
       };
+    }
+  }
+
+  async sendReport(endpoint: RAGEndpoints, token: string): Promise<void> {
+    const FormData = require('form-data');
+    const mailgun = new Mailgun(FormData);
+    const mg = mailgun.client({
+      username: 'api',
+      key: process.env.MAILGUN_API_KEY || '',
+    });
+
+    let needsPastData = false;
+    let subject = 'Oceana - Reporte VTT Gestión Diaria';
+    let reportName = 'VTT Gestión Diaria';
+    const to = [
+      'Nohora Galan <galan.nohora@gmail.com>',
+      'Luis Garcia <alcarohtar86@gmail.com>',
+    ];
+
+    switch (endpoint) {
+      case RAGEndpoints.Ecopetrol_Affinity:
+        needsPastData = true;
+        subject = 'Oceana - Reporte Ecopetrol Afinidad';
+        reportName = 'Ecopetrol Afinidad';
+        to.push('Mateo Sabogal <mateo.sabogal@ecopetrol.com.co>');
+        to.push('Miguel Acosta <miguelan.acosta@ecopetrol.com.co>');
+        break;
+      case RAGEndpoints.Ecopetrol_Materiality:
+        needsPastData = true;
+        subject = 'Oceana - Reporte Ecopetrol Materialidad';
+        reportName = 'Ecopetrol Materialidad';
+        to.push('Mateo Sabogal <mateo.sabogal@ecopetrol.com.co>');
+        to.push('Miguel Acosta <miguelan.acosta@ecopetrol.com.co>');
+        break;
+      case RAGEndpoints.Pairs_Affinity:
+        needsPastData = true;
+        subject = 'Oceana - Reporte Pares Afinidad';
+        reportName = 'Pares Afinidad';
+        to.push('Mateo Sabogal <mateo.sabogal@ecopetrol.com.co>');
+        to.push('Miguel Acosta <miguelan.acosta@ecopetrol.com.co>');
+        break;
+      case RAGEndpoints.Pairs_Ranking:
+        subject = 'Oceana - Reporte Pares Ranking';
+        reportName = 'Pares Ranking';
+        to.push('Mateo Sabogal <mateo.sabogal@ecopetrol.com.co>');
+        to.push('Miguel Acosta <miguelan.acosta@ecopetrol.com.co>');
+        break;
+      case RAGEndpoints.Trends_Human_Rights:
+        needsPastData = true;
+        subject = 'Oceana - Reporte Trends Derechos Humanos';
+        reportName = 'Trends Derechos Humanos';
+        to.push('Mateo Sabogal <mateo.sabogal@ecopetrol.com.co>');
+        to.push('Miguel Acosta <miguelan.acosta@ecopetrol.com.co>');
+        break;
+      case RAGEndpoints.Trends_Peace:
+        subject = 'Oceana - Reporte Trends Paz';
+        reportName = 'Trends Paz';
+        to.push('Mateo Sabogal <mateo.sabogal@ecopetrol.com.co>');
+        to.push('Miguel Acosta <miguelan.acosta@ecopetrol.com.co>');
+        break;
+      case RAGEndpoints.VTT_News:
+        subject = 'Oceana - Reporte VTT Gestión Noticias';
+        reportName = 'VTT Gestión Noticias';
+        to.push('Rafael Ibarra <rafael.ibarra@ecopetrol.com.co>');
+        to.push('Argemiro Quitian <argemiro.quitian@ecopetrol.com.co>');
+        break;
+      case RAGEndpoints.VTT_Demands:
+        reportName = 'VTT Gestión Demandas';
+        subject = 'Oceana - Reporte VTT Gestión Demandas';
+        to.push('Rafael Ibarra <rafael.ibarra@ecopetrol.com.co>');
+        to.push('Argemiro Quitian <argemiro.quitian@ecopetrol.com.co>');
+        break;
+      case RAGEndpoints.VTT_Daily:
+        to.push('Rafael Ibarra <rafael.ibarra@ecopetrol.com.co>');
+        to.push('Argemiro Quitian <argemiro.quitian@ecopetrol.com.co>');
+        break;
+    }
+
+    const reportData: any = await this.createReport(
+      {
+        endpoint,
+        needsPastData,
+      },
+      token,
+    );
+
+    const buffer: Buffer = Buffer.isBuffer(reportData.buffer)
+      ? reportData.buffer
+      : Buffer.from(reportData.buffer);
+
+    const data = await mg.messages.create('whaleandjaguar.co', {
+      from: 'Whale & Jaguar <postmaster@whaleandjaguar.co>',
+      to,
+      subject,
+      text: `Buenos días,\n\nRecibe este Reporte ${reportName} generado por el Observatorio Corporativo de Ecopetrol. Este reporte consolida los principales hallazgos y tendencias monitoreadas en medios, redes sociales y fuentes institucionales, con base en los datos recolectados.\n\nPuedes consultar los detalles y visualizar los indicadores interactivos directamente en la plataforma OCEANA, desde el tablero correspondiente.\n\nSi tienes dudas sobre la lectura del informe o deseas realizar un análisis más específico, puedes apoyarte en el chatbot del Observatorio, formulando preguntas relacionadas con los datos correspondientes.\n\n¡Esperamos que este reporte sea de mucha utilidad!\n\nAtentamente,\nObservatorio Corporativo\nEcopetrol S.A.`,
+      attachment: [
+        {
+          data: buffer,
+          filename: reportData.filename,
+          contentType: reportData.mimeType,
+        },
+      ],
+    });
+
+    if (!data.id) {
+      throw new Error('Failed to send email');
     }
   }
 }

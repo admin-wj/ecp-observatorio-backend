@@ -4,7 +4,6 @@ import {
   AccessorData,
   DataEntry,
   DataWithLocation,
-  KeyValueCount,
   LocationInfo,
   MapChartData,
 } from '../types';
@@ -108,7 +107,7 @@ export const calculateGroupedMetrics = <T>(
               metricKey === 'General';
 
             if (shouldCalculate)
-              acc[metricKey] = Number((row[metricKey] / row[key]).toFixed(2));
+              acc[metricKey] = Number((row[metricKey] / row[key]).toFixed(0));
           }
         }
         return acc;
@@ -312,7 +311,7 @@ export const getDataInTime = <T>(
               key,
               entry[`${key}_count`]
                 ? Number(
-                    ((entry[key] / entry[`${key}_count`]) * 100).toFixed(2),
+                    ((entry[key] / entry[`${key}_count`]) * 100).toFixed(0),
                   )
                 : 0,
             ]),
@@ -363,7 +362,7 @@ export const getDataByCity = <T>(
               0,
             );
           } else if (Array.isArray(value)) {
-            valueSum = value.reduce((a, b) => a + b, 0);
+            valueSum = value.reduce((a, b) => a + b, 0) / value.length;
           }
 
           if (i > -1) {
