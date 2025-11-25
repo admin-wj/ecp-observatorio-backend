@@ -7,6 +7,7 @@ export enum MainPathEndpoint {
   Trends = 'trends',
   VTT = 'vtt',
   RAG = 'rag',
+  Relationship = 'relationship'
 }
 
 export enum SubPathEndpoint {
@@ -22,6 +23,7 @@ export enum SubPathEndpoint {
   Daily = 'daily',
   Summary = 'summary',
   Report = 'report',
+  SendReport = 'send-report',
 }
 
 export enum RAGEndpoints {
@@ -47,12 +49,14 @@ export enum MongoCollections {
   TrendsPeace = 'df_trends_peace',
   VTTDemands = 'df_vtt_claims',
   VTTNews = 'df_vtt_news',
+  Relationship = 'df_grn',
 }
 
 export enum CommonMongoKeys {
   Affinity = 'affinity',
   Entity = 'entity',
   Location = 'location',
+  LocationId = 'location_id',
   Polarity = 'polarity',
   Similarity = 'similarity',
   SourceCategory = 'source_category',

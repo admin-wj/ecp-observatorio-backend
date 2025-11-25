@@ -103,7 +103,7 @@ export class PairsService {
         ...d,
         [PairsRankingEnum.Score100]:
           typeof d[PairsRankingEnum.Score100] === 'number'
-            ? Number(d[PairsRankingEnum.Score100].toFixed(2))
+            ? Number(d[PairsRankingEnum.Score100].toFixed(0))
             : d[PairsRankingEnum.Score100],
       })),
       dataByRanking,

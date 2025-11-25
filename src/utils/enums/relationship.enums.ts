@@ -1,0 +1,15 @@
+export enum RelationshipEnum {
+  Summary = 'summary',
+  Keywords = 'keywords',
+  InfoType = 'info_type',
+  MentionType = 'mention_type',
+  EntityFoco = 'entity_foco',
+  EntityType = 'entity_type',
+  GRNActor = 'grn_actor',
+  InfluenceLevel = 'influence_level',
+  RelPotential = 'rel_potential',
+  RelObjective = 'rel_objective',
+  PolarityNum = 'polarity_num',
+  Risk = 'risk',
+  RiskLevel = 'risk_level',
+}

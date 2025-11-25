@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
   RAGSummaryResponse,
   RAGSummaryDto,
   SubPathEndpoint,
+  RAGSendReportDto,
 } from 'src/utils';
 
 import { RAGService } from './rag.service';
@@ -26,16 +28,22 @@ export class RAGController {
 
   @UseGuards(JwtAuthGuard)
   @Get(SubPathEndpoint.Summary)
-  async getSummaryData(@Query() dto: RAGSummaryDto): Promise<RAGSummaryResponse> {
-    const result = await this.ragService.findSummaryData(dto);
-    return result;
+  getSummaryData(@Query() dto: RAGSummaryDto): Promise<RAGSummaryResponse> {
+    return this.ragService.findSummaryData(dto);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('report')
-  async createReport(@Body() dto: RAGReportDto, @Res() res: Response) {
-    const { buffer, filename, mimeType } =
-      await this.ragService.createReport(dto);
+  @Post(SubPathEndpoint.Report)
+  async createReport(
+    @Body() dto: RAGReportDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const token = req.headers['authorization'];
+    const { buffer, filename, mimeType } = await this.ragService.createReport(
+      dto,
+      token,
+    );
 
     res.set({
       'Content-Type': mimeType,
@@ -43,5 +51,15 @@ export class RAGController {
       'Content-Length': buffer.length,
     });
     res.send(buffer);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(SubPathEndpoint.SendReport)
+  sendReport(
+    @Query() dto: RAGSendReportDto,
+    @Req() req: Request,
+  ): Promise<any> {
+    const token = req.headers['authorization'];
+    return this.ragService.sendReport(dto.endpoint, token);
   }
 }

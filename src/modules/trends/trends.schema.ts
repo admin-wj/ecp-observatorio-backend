@@ -23,6 +23,7 @@ export class TrendsGeneral {
   @Prop() [CommonMongoKeys.TextClean]: string;
   @Prop() [CommonMongoKeys.Url]: string;
   @Prop() [CommonMongoKeys.Location]: string;
+  @Prop() [CommonMongoKeys.LocationId]: string;
   @Prop([String]) [TrendsGeneralEnum.Topic]: string[];
   @Prop([String]) [TrendsGeneralEnum.TrendTopic]: string[];
   @Prop() [TrendsGeneralEnum.TrendIndex]: number;
@@ -44,6 +45,7 @@ export class TrendsHumanRights {
   @Prop() [TrendsHumanRightsEnum.Title]: string;
   @Prop() [CommonMongoKeys.Similarity]: number;
   @Prop() [CommonMongoKeys.Location]: string;
+  @Prop() [CommonMongoKeys.LocationId]: string;
   @Prop({ enum: Polarity }) [CommonMongoKeys.Polarity]: Polarity;
   @Prop() [CommonMongoKeys.Affinity]: number;
   @Prop([String]) [TrendsHumanRightsEnum.MentionEntity]: string[];
@@ -71,6 +73,7 @@ export class TrendsPeace {
   @Prop() [TrendsPeaceEnum.Title]: string;
   @Prop() [CommonMongoKeys.Similarity]: number;
   @Prop() [CommonMongoKeys.Location]: string;
+  @Prop() [CommonMongoKeys.LocationId]: string;
   @Prop({ enum: Polarity }) [CommonMongoKeys.Polarity]: Polarity;
   @Prop() [CommonMongoKeys.Affinity]: number;
   @Prop([String]) [TrendsPeaceEnum.MentionEntity]: string[];

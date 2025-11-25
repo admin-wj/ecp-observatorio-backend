@@ -1,6 +1,6 @@
 import { FilterQuery } from 'mongoose';
 
-import { LocationDataKeys, Polarity } from '../enums';
+import { LocationDataKeys, Polarity, Relevance } from '../enums';
 
 export type QueryParams = Record<string, string | string[] | undefined>;
 
@@ -74,16 +74,16 @@ export type AffinityMetricsByGroups<
   [key in K]: string[];
 };
 
-export type BaseAffinitySummary = WithCount<{
-  affinity: {
-    [Polarity.Negative]: number;
-    [Polarity.Neutral]: number;
-    [Polarity.Positive]: number;
+export type BaseRelevanceSummary = WithCount<{
+  relevance: {
+    [Relevance.Low]: number;
+    [Relevance.Medium]: number;
+    [Relevance.High]: number;
   };
   similarity_vtt: number;
 }>;
 
-export type SummaryWithKeys<TKeys extends {}> = BaseAffinitySummary & TKeys;
+export type SummaryWithKeys<TKeys extends {}> = BaseRelevanceSummary & TKeys;
 
 export type KeyValueCount<TKeys extends {}> = WithCount<{
   id: string;

@@ -13,6 +13,7 @@ import { PairsModule } from './modules/pairs/pairs.module';
 import { RAGModule } from './modules/rag/rag.module';
 import { TrendsModule } from './modules/trends/trends.module';
 import { VTTModule } from './modules/vtt/vtt.module';
+import { RelationshipModule } from './modules/relationship/relationship.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { VTTModule } from './modules/vtt/vtt.module';
     PairsModule,
     TrendsModule,
     VTTModule,
+    RelationshipModule,
     RAGModule,
   ],
   controllers: [AppController, AuthController],

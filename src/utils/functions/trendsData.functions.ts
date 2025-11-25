@@ -95,8 +95,8 @@ export const getDataByRiskAndImpcat = (
     .map(({ id, right, risk, impact, count }) => ({
       id,
       right,
-      risk: Number((risk / count).toFixed(2)),
-      impact: Number((impact / count).toFixed(2)),
+      risk: Number((risk / count).toFixed(0)),
+      impact: Number((impact / count).toFixed(0)),
       count,
     }))
     .filter((data) =>
@@ -159,8 +159,8 @@ export const getDataByHumanRight = (
         ),
       ).filter((l) => (locations.length ? locations.includes(l) : l !== '')),
       right,
-      risk: Number(((risk as number) / count).toFixed(2)),
-      impact: Number(((impact as number) / count).toFixed(2)),
+      risk: Number(((risk as number) / count).toFixed(0)),
+      impact: Number(((impact as number) / count).toFixed(0)),
       count,
     }))
     .filter((data) =>

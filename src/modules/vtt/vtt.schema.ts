@@ -27,6 +27,7 @@ export class VTTNews {
   @Prop() [VTTEnum.Summary]: string;
   @Prop() [CommonMongoKeys.Url]: string;
   @Prop() [CommonMongoKeys.Location]: string;
+  @Prop() [CommonMongoKeys.LocationId]: string;
   @Prop() [CommonMongoKeys.Similarity]: number;
   @Prop([String]) [VTTEnum.ClaimType]: string[];
   @Prop([String]) [VTTEnum.ClaimActor]: string[];
