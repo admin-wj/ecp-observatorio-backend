@@ -20,7 +20,7 @@ export const ragAPICall = async (
   query: FilterQuery<unknown>,
   endpoint: RAGEndpoints,
   data?: Record<string, unknown>,
-) => {
+): Promise<Record<string, unknown>> => {
   const ragApiUrl = process.env.RAG_API_URL ?? '';
   const url = `${ragApiUrl}/${ragEndpoint}`;
 
@@ -52,7 +52,7 @@ export const ragAPICall = async (
     clearTimeout(timeoutId);
 
     if (!response.ok) throw new Error('Error fetching RAG data');
-    return response.json();
+    return (await response.json()) as Record<string, unknown>;
   } catch (error) {
     clearTimeout(timeoutId);
     console.error(`RAG API call failed for ${url}:`, error);
