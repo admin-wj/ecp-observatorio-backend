@@ -21,9 +21,13 @@ export const ragAPICall = async (
   data?: Record<string, unknown>,
 ) => {
   const ragApiUrl = process.env.RAG_API_URL ?? '';
+  const url = `${ragApiUrl}/${ragEndpoint}`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes
 
   try {
-    const response = await fetch(`${ragApiUrl}/${ragEndpoint}`, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,11 +37,16 @@ export const ragAPICall = async (
         endpoint,
         data,
       }),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) throw new Error('Error fetching RAG data');
     return response.json();
   } catch (error) {
+    clearTimeout(timeoutId);
+    console.error(`RAG API call failed for ${url}:`, error);
     throw error;
   }
 };
