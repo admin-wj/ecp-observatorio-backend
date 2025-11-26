@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { FilterQuery } from 'mongoose';
 import { Writable } from 'stream';
+import { Agent, fetch as undiciFetch } from 'undici';
 
 import { RAGEndpoints } from '../enums';
 import EcopetrolAffinityTemplate from '../report-templates/ecopetrol-affinity.template';
@@ -20,7 +21,6 @@ export const ragAPICall = async (
   endpoint: RAGEndpoints,
   data?: Record<string, unknown>,
 ) => {
-  const { Agent, fetch: undiciFetch } = require('undici');
   const ragApiUrl = process.env.RAG_API_URL ?? '';
   const url = `${ragApiUrl}/${ragEndpoint}`;
 
