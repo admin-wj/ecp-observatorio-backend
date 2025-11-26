@@ -21,5 +21,5 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/utils/report-templates/images ./src/utils/report-templates/images
 
 EXPOSE 3000
-
+# Comando para ejecutar la aplicación
 CMD ["node", "dist/main.js"]
