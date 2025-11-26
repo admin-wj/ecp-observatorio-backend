@@ -26,9 +26,7 @@ export const ragAPICall = async (
 
   // Create custom agent with 5-minute connection timeout
   const agent = new Agent({
-    connect: {
-      timeout: 300000, // 5 minutes for connection
-    },
+    connectTimeout: 300000, // 5 minutes for connection
   });
 
   const controller = new AbortController();
