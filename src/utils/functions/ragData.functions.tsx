@@ -20,14 +20,22 @@ export const ragAPICall = async (
   endpoint: RAGEndpoints,
   data?: Record<string, unknown>,
 ) => {
+  const { Agent, fetch: undiciFetch } = require('undici');
   const ragApiUrl = process.env.RAG_API_URL ?? '';
   const url = `${ragApiUrl}/${ragEndpoint}`;
 
+  // Create custom agent with 5-minute connection timeout
+  const agent = new Agent({
+    connect: {
+      timeout: 300000, // 5 minutes for connection
+    },
+  });
+
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes
+  const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes for request
 
   try {
-    const response = await fetch(url, {
+    const response = await undiciFetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,6 +46,7 @@ export const ragAPICall = async (
         data,
       }),
       signal: controller.signal,
+      dispatcher: agent,
     });
 
     clearTimeout(timeoutId);
@@ -48,6 +57,8 @@ export const ragAPICall = async (
     clearTimeout(timeoutId);
     console.error(`RAG API call failed for ${url}:`, error);
     throw error;
+  } finally {
+    agent.close();
   }
 };
 
