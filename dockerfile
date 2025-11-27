@@ -3,7 +3,14 @@ FROM node:22 AS builder
 
 WORKDIR /app
 
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
+
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache make g++ cairo-dev pango-dev libjpeg-turbo-dev giflib-dev librsvg-dev bzip2-dev jq python3 udev ttf-freefont chromium
+
 COPY package*.json ./
+RUN npm install canvas --build-from-source
 RUN npm install
 
 COPY . .
