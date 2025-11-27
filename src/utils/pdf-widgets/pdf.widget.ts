@@ -10,6 +10,11 @@ export const generatePDF = async (htmlContent: string) => {
         "--headless",
         "--disable-gpu",
         "--disable-dev-shm-usage",
+        "--disable-setuid-sandbox",
+        "--no-first-run",
+        "--no-zygote",
+        "--single-process",
+        "--disable-extensions",
       ],
     });
   const page = await browser.newPage();
