@@ -13,11 +13,25 @@ import {
   RAGReportData,
   getFileFormattedDate,
   RAGEndpoints,
+  parseFilters,
+  Filters,
 } from 'src/utils';
+
+import { EcopetrolService } from '../ecopetrol/ecopetrol.service';
+import { PairsService } from '../pairs/pairs.service';
+import { RelationshipService } from '../relationship/relationship.service';
+import { TrendsService } from '../trends/trends.service';
+import { VTTService } from '../vtt/vtt.service';
 
 @Injectable()
 export class RAGService {
-  constructor() {}
+  constructor(
+    private readonly ecopetrolService: EcopetrolService,
+    private readonly pairsService: PairsService,
+    private readonly relationshipService: RelationshipService,
+    private readonly trendsService: TrendsService,
+    private readonly vttService: VTTService,
+  ) { }
 
   async findSummaryData(dto: RAGSummaryDto): Promise<RAGSummaryResponse> {
     const { query, endpoint } = dto;
@@ -42,24 +56,12 @@ export class RAGService {
     } = dto;
 
     let data: any;
-    const getDataURL = (currentParams: string) =>
-      `${process.env.API_URL}${process.env.PORT ? `:${process.env.PORT}` : ''}/api/${endpoint.replaceAll('-', '/')}?${currentParams.toString()}`;
 
     if (currentData) {
       data = currentData;
     } else {
-      const currentParams = new URLSearchParams(getReportDates(endpoint));
-
-      const dataResponse = await fetch(getDataURL(currentParams.toString()), {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token || '',
-        },
-        cache: 'no-store',
-      });
-
-      if (!dataResponse.ok) throw new Error(dataResponse.statusText);
-      data = await dataResponse.json();
+      const queryParams = getReportDates(endpoint);
+      data = await this.getDataForEndpoint(endpoint, queryParams);
     }
 
     const ragReportData: any = await ragAPICall(
@@ -77,15 +79,8 @@ export class RAGService {
         needs_past_data: 'true',
       };
       if (searchParams) newSearchParams.needs_past_data = 'true';
-      const currentParams = new URLSearchParams(newSearchParams as any);
-      const dataResponse = await fetch(getDataURL(currentParams.toString()), {
-        headers: {
-          Authorization: token || '',
-        },
-      });
 
-      if (!dataResponse.ok) throw new Error(dataResponse.statusText);
-      pastData = await dataResponse.json();
+      pastData = await this.getDataForEndpoint(endpoint, newSearchParams);
     }
 
     const htmlContent = await getHTMLComponent(
@@ -116,6 +111,38 @@ export class RAGService {
         mimeType:
           'application/pdf',
       };
+    }
+  }
+
+  private async getDataForEndpoint(
+    endpoint: RAGEndpoints,
+    queryParams: any,
+  ): Promise<any> {
+    const filters: Filters = parseFilters(queryParams);
+
+    switch (endpoint) {
+      case RAGEndpoints.Ecopetrol_Affinity:
+        return this.ecopetrolService.findAffinityData(filters);
+      case RAGEndpoints.Ecopetrol_Materiality:
+        return this.ecopetrolService.findMaterialityData(filters);
+      case RAGEndpoints.Pairs_Affinity:
+        return this.pairsService.findAffinityData(filters);
+      case RAGEndpoints.Pairs_Ranking:
+        return this.pairsService.findRankingData(filters);
+      case RAGEndpoints.Trends_Human_Rights:
+        return this.trendsService.findHumanRightsData(filters);
+      case RAGEndpoints.Trends_Peace:
+        return this.trendsService.findPeaceData(filters);
+      case RAGEndpoints.VTT_News:
+        return this.vttService.findNewsData(filters);
+      case RAGEndpoints.VTT_Demands:
+        return this.vttService.findDemandsData(filters);
+      case RAGEndpoints.VTT_Daily:
+        return this.vttService.findDailyData(filters);
+      case RAGEndpoints.Relationship:
+        return this.relationshipService.findRelationshipData(filters);
+      default:
+        throw new Error(`Endpoint ${endpoint} not supported`);
     }
   }
 
