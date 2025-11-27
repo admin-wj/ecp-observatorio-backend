@@ -24,5 +24,6 @@ import { TrendsService } from './trends.service';
   ],
   controllers: [TrendsController],
   providers: [TrendsService],
+  exports: [TrendsService],
 })
-export class TrendsModule {}
+export class TrendsModule { }

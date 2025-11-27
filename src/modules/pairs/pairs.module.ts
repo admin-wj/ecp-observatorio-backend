@@ -16,5 +16,6 @@ import { PairsService } from './pairs.service';
   ],
   controllers: [PairsController],
   providers: [PairsService],
+  exports: [PairsService],
 })
-export class PairsModule {}
+export class PairsModule { }

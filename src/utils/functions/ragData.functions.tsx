@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { FilterQuery } from 'mongoose';
 import { Writable } from 'stream';
-import { Agent, fetch as undiciFetch } from 'undici';
 
 import { RAGEndpoints } from '../enums';
 import EcopetrolAffinityTemplate from '../report-templates/ecopetrol-affinity.template';
@@ -24,16 +23,8 @@ export const ragAPICall = async (
   const ragApiUrl = process.env.RAG_API_URL ?? '';
   const url = `${ragApiUrl}/${ragEndpoint}`;
 
-  // Create custom agent with 5-minute connection timeout
-  const agent = new Agent({
-    connectTimeout: 300000, // 5 minutes for connection
-  });
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes for request
-
   try {
-    const response = await undiciFetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,20 +34,12 @@ export const ragAPICall = async (
         endpoint,
         data,
       }),
-      signal: controller.signal,
-      dispatcher: agent,
     });
 
-    clearTimeout(timeoutId);
-
     if (!response.ok) throw new Error('Error fetching RAG data');
-    return (await response.json()) as Record<string, unknown>;
+    return response.json();
   } catch (error) {
-    clearTimeout(timeoutId);
-    console.error(`RAG API call failed for ${url}:`, error);
     throw error;
-  } finally {
-    agent.close();
   }
 };
 

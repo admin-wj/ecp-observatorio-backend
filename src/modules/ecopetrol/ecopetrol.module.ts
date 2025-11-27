@@ -15,5 +15,6 @@ import { EcopetrolService } from './ecopetrol.service';
   ],
   controllers: [EcopetrolController],
   providers: [EcopetrolService],
+  exports: [EcopetrolService],
 })
-export class EcopetrolModule {}
+export class EcopetrolModule { }
