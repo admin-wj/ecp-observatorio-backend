@@ -105,7 +105,7 @@ export const getReportDateRange = (
         startDate: new Date(
           now.getFullYear(),
           now.getMonth(),
-          now.getDay() - 1,
+          now.getDate() - 1,
           0,
           0,
           0,
@@ -113,7 +113,7 @@ export const getReportDateRange = (
         endDate: new Date(
           now.getFullYear(),
           now.getMonth(),
-          now.getDay() - 1,
+          now.getDate() - 1,
           23,
           59,
           59,
@@ -125,7 +125,7 @@ export const getReportDateRange = (
         startDate: new Date(
           now.getFullYear(),
           now.getMonth(),
-          now.getDay() - 7,
+          now.getDate() - 7,
           0,
           0,
           0,
@@ -133,7 +133,7 @@ export const getReportDateRange = (
         endDate: new Date(
           now.getFullYear(),
           now.getMonth(),
-          now.getDay() - 1,
+          now.getDate() - 1,
           23,
           59,
           59,

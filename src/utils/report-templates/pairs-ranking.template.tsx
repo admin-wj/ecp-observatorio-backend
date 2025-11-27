@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
 import { getFormattedDate, getYear } from '../functions';
-import { ProgressBar } from '../pdf-widgets';
+import { ProgressBar } from '../report-widgets';
 import {
   FiltersValues,
   PairsRankingReport,

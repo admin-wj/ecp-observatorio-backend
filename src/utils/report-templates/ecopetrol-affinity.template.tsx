@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
-import { LineChartWidget, ProgressBar } from '../pdf-widgets';
+import { LineChartWidget, ProgressBar } from '../report-widgets';
 import { EcopetrolAffinityReport, EcopetrolAffinityResponse } from '../types';
 import { getFormattedDate } from '../functions';
 

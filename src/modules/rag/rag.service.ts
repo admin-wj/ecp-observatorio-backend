@@ -31,7 +31,7 @@ export class RAGService {
     private readonly relationshipService: RelationshipService,
     private readonly trendsService: TrendsService,
     private readonly vttService: VTTService,
-  ) { }
+  ) {}
 
   async findSummaryData(dto: RAGSummaryDto): Promise<RAGSummaryResponse> {
     const { query, endpoint } = dto;
@@ -108,8 +108,7 @@ export class RAGService {
       return {
         buffer,
         filename,
-        mimeType:
-          'application/pdf',
+        mimeType: 'application/pdf',
       };
     }
   }
