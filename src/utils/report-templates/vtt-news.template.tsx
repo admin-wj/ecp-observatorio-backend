@@ -39,11 +39,11 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
       headerName: 'Palabras clave',
     },
     {
-      field: 'affinity',
-      headerName: 'Sentimiento',
+      field: 'relevance',
+      headerName: 'Relevancia',
     },
     {
-      field: 'total',
+      field: 'count',
       headerName: 'Volumen',
     },
   ];
@@ -91,8 +91,8 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
                 <tr key={i}>
                   {columns.map((column) => {
                     const value = d[column.field as keyof ComponentSummary];
-                    if (column.field === 'affinity') {
-                      value as {
+                    if (column.field === 'relevance') {
+                      const relevanceData = value as {
                         [Relevance.Low]: number;
                         [Relevance.Medium]: number;
                         [Relevance.High]: number;
@@ -118,9 +118,11 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
                               }}
                             >
                               {Relevance.Low}:{' '}
-                              {((value[Relevance.Low] / count) * 100).toFixed(
-                                0,
-                              )}{' '}
+                              {(
+                                ((relevanceData?.[Relevance.Low] || 0) /
+                                  count) *
+                                100
+                              ).toFixed(0)}{' '}
                               %
                             </div>
                             <div
@@ -131,7 +133,8 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
                             >
                               {Relevance.Medium}:{' '}
                               {(
-                                (value[Relevance.Medium] / count) *
+                                ((relevanceData?.[Relevance.Medium] || 0) /
+                                  count) *
                                 100
                               ).toFixed(0)}{' '}
                               %
@@ -144,9 +147,11 @@ const VTTNewsTemplate: FC<VTTNewsTemplateProps> = ({ data, reportData }) => {
                               }}
                             >
                               {Relevance.High}:{' '}
-                              {((value[Relevance.High] / count) * 100).toFixed(
-                                0,
-                              )}{' '}
+                              {(
+                                ((relevanceData?.[Relevance.High] || 0) /
+                                  count) *
+                                100
+                              ).toFixed(0)}{' '}
                               %
                             </div>
                           </div>

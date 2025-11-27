@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { FC } from 'react';
 
 import HeaderTemplate from './header.template';
-import { Polarity } from '../enums';
+import { Relevance } from '../enums';
 import { ActorSummary, VTTDemandsReport, VTTDemandsResponse } from '../types';
 
 interface VTTDemandsTemplateProps {
@@ -34,7 +34,7 @@ const VTTDemandsTemplate: FC<VTTDemandsTemplateProps> = ({
 
   const columns = [
     {
-      field: 'actor',
+      field: 'claim_actor',
       headerName: 'Actor',
     },
     {
@@ -42,11 +42,11 @@ const VTTDemandsTemplate: FC<VTTDemandsTemplateProps> = ({
       headerName: 'Palabras clave',
     },
     {
-      field: 'affinity',
-      headerName: 'Sentimiento',
+      field: 'relevance',
+      headerName: 'Relevancia',
     },
     {
-      field: 'total',
+      field: 'count',
       headerName: 'Volumen',
     },
   ];
@@ -138,12 +138,15 @@ const VTTDemandsTemplate: FC<VTTDemandsTemplateProps> = ({
                 <tr key={i}>
                   {columns.map((column) => {
                     const value: any = d[column.field as keyof ActorSummary];
-                    if (column.field === 'affinity') {
-                      const { Positivo, Neutro, Negativo } = value as {
-                        [Polarity.Negative]: number;
-                        [Polarity.Neutral]: number;
-                        [Polarity.Positive]: number;
+                    if (column.field === 'keywords') console.log(value);
+
+                    if (column.field === 'relevance') {
+                      const relevanceData = value as {
+                        [Relevance.Low]: number;
+                        [Relevance.Medium]: number;
+                        [Relevance.High]: number;
                       };
+
                       const { count } = d;
 
                       return (
@@ -164,7 +167,12 @@ const VTTDemandsTemplate: FC<VTTDemandsTemplateProps> = ({
                                 backgroundColor: '#C4D600',
                               }}
                             >
-                              Positivo: {((Positivo / count) * 100).toFixed(0)}{' '}
+                              {Relevance.Low}:{' '}
+                              {(
+                                ((relevanceData?.[Relevance.Low] || 0) /
+                                  count) *
+                                100
+                              ).toFixed(0)}{' '}
                               %
                             </div>
                             <div
@@ -173,7 +181,13 @@ const VTTDemandsTemplate: FC<VTTDemandsTemplateProps> = ({
                                 backgroundColor: '#FDD100',
                               }}
                             >
-                              Neutro: {((Neutro / count) * 100).toFixed(0)} %
+                              {Relevance.Medium}:{' '}
+                              {(
+                                ((relevanceData?.[Relevance.Medium] || 0) /
+                                  count) *
+                                100
+                              ).toFixed(0)}{' '}
+                              %
                             </div>
                             <div
                               style={{
@@ -182,7 +196,12 @@ const VTTDemandsTemplate: FC<VTTDemandsTemplateProps> = ({
                                 color: '#FFFFFF',
                               }}
                             >
-                              Negativo: {((Negativo / count) * 100).toFixed(0)}{' '}
+                              {Relevance.High}:{' '}
+                              {(
+                                ((relevanceData?.[Relevance.High] || 0) /
+                                  count) *
+                                100
+                              ).toFixed(0)}{' '}
                               %
                             </div>
                           </div>

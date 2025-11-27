@@ -19,7 +19,7 @@ export const getDataByRanking = (data: PairsRanking[], pairs: string[]) => {
       if (index > -1)
         acc[index][el[PairsRankingEnum.Pair]] =
           el[PairsRankingEnum.Score100] !== undefined
-            ? Number(el[PairsRankingEnum.Score100].toFixed(0))
+            ? Number(el[PairsRankingEnum.Score100].toFixed(2))
             : null;
       else
         acc.push({
