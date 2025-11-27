@@ -40,7 +40,7 @@ export const calculateGroupedMetrics = <T>(
         groupMetrics.set(
           secondaryValue,
           (groupMetrics.get(secondaryValue) || 0) +
-            item[CommonMongoKeys.Affinity],
+          item[CommonMongoKeys.Affinity],
         );
         groupMetrics.set(
           `${secondaryValue}_TOTAL`,
@@ -107,7 +107,7 @@ export const calculateGroupedMetrics = <T>(
               metricKey === 'General';
 
             if (shouldCalculate)
-              acc[metricKey] = Number((row[metricKey] / row[key]).toFixed(0));
+              acc[metricKey] = Number((row[metricKey] / row[key]).toFixed(2));
           }
         }
         return acc;
@@ -216,8 +216,8 @@ export const getDataInTime = <T>(
   const allAccessors: string[] = accessorList?.length
     ? accessorList
     : Array.from(
-        new Set(data.flatMap((d) => (d[dataAccessor] as string[]) ?? [])),
-      );
+      new Set(data.flatMap((d) => (d[dataAccessor] as string[]) ?? [])),
+    );
 
   const formattedData = data.reduce((acc, el, i) => {
     const date = getFormattedDate(el[CommonMongoKeys.Timestamp]);
@@ -262,8 +262,8 @@ export const getDataInTime = <T>(
         ...Object.fromEntries(allAccessors.map((accessor) => [accessor, 0])),
         ...(key
           ? Object.fromEntries(
-              allAccessors.map((accessor) => [`${accessor}_count`, 0]),
-            )
+            allAccessors.map((accessor) => [`${accessor}_count`, 0]),
+          )
           : {}),
       });
       acc[acc.length - 1].x = date;
@@ -311,8 +311,8 @@ export const getDataInTime = <T>(
               key,
               entry[`${key}_count`]
                 ? Number(
-                    ((entry[key] / entry[`${key}_count`]) * 100).toFixed(0),
-                  )
+                  ((entry[key] / entry[`${key}_count`]) * 100).toFixed(0),
+                )
                 : 0,
             ]),
           ),
@@ -382,12 +382,12 @@ export const getDataByCity = <T>(
     },
     accessors.length && accessors.some(({ name }) => name)
       ? accessors.reduce(
-          (obj, { name }) => {
-            if (name) obj[name] = [];
-            return obj;
-          },
-          {} as Record<string, MapChartData[]>,
-        )
+        (obj, { name }) => {
+          if (name) obj[name] = [];
+          return obj;
+        },
+        {} as Record<string, MapChartData[]>,
+      )
       : ([] as MapChartData[]),
   );
 
@@ -417,8 +417,8 @@ export const getDataCountByKey = <T>(
   const keysToCount: string[] = arrayFilter.length
     ? arrayFilter
     : Array.from(
-        new Set(data.flatMap((d) => (d[primaryKey] as string[]) ?? [])),
-      );
+      new Set(data.flatMap((d) => (d[primaryKey] as string[]) ?? [])),
+    );
 
   return keysToCount.map((keyValue) => {
     const count = data.filter((el) => {
@@ -426,8 +426,8 @@ export const getDataCountByKey = <T>(
       const additionalMatches = !additionalFilter
         ? true
         : (el[additionalFilter.key] as string[])?.includes(
-            additionalFilter.filter,
-          );
+          additionalFilter.filter,
+        );
       return primaryMatches && additionalMatches;
     }).length;
 
