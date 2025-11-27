@@ -3,15 +3,15 @@ import puppeteer from 'puppeteer';
 export const generatePDF = async (htmlContent: string) => {
   const browser =
     await puppeteer.launch({
-    executablePath: "/usr/bin/chromium-browser",
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--headless",
-      "--disable-gpu",
-      "--disable-dev-shm-usage",
-    ],
-  });
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser",
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--headless",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+      ],
+    });
   const page = await browser.newPage();
 
   const styledHtmlContent = `
