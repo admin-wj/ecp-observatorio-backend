@@ -37,6 +37,7 @@ export enum RAGEndpoints {
   VTT_News = `${MainPathEndpoint.VTT}-${SubPathEndpoint.News}`,
   VTT_Demands = `${MainPathEndpoint.VTT}-${SubPathEndpoint.Demands}`,
   VTT_Daily = `${MainPathEndpoint.VTT}-${SubPathEndpoint.Daily}`,
+  Relationship = `${MainPathEndpoint.Relationship}`,
 }
 
 export enum MongoCollections {

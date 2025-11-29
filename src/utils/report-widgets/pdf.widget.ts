@@ -1,17 +1,22 @@
 import puppeteer from 'puppeteer';
 
 export const generatePDF = async (htmlContent: string) => {
-  const browser =
-    await puppeteer.launch(/* {
-    executablePath: "/usr/bin/chromium-browser",
+  const browser = await puppeteer.launch({
+    executablePath:
+      process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
     headless: true,
     args: [
-      "--no-sandbox",
-      "--headless",
-      "--disable-gpu",
-      "--disable-dev-shm-usage",
+      '--no-sandbox',
+      '--headless',
+      '--disable-gpu',
+      '--disable-dev-shm-usage',
+      '--disable-setuid-sandbox',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-extensions',
     ],
-  } */);
+  });
   const page = await browser.newPage();
 
   const styledHtmlContent = `

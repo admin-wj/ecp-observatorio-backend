@@ -15,5 +15,6 @@ import { VTTService } from './vtt.service';
   ],
   controllers: [VTTController],
   providers: [VTTService],
+  exports: [VTTService],
 })
-export class VTTModule {}
+export class VTTModule { }

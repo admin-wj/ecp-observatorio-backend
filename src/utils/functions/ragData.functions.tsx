@@ -19,11 +19,12 @@ export const ragAPICall = async (
   query: FilterQuery<unknown>,
   endpoint: RAGEndpoints,
   data?: Record<string, unknown>,
-) => {
+): Promise<Record<string, unknown>> => {
   const ragApiUrl = process.env.RAG_API_URL ?? '';
+  const url = `${ragApiUrl}/${ragEndpoint}`;
 
   try {
-    const response = await fetch(`${ragApiUrl}/${ragEndpoint}`, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
