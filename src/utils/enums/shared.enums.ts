@@ -6,8 +6,9 @@ export enum MainPathEndpoint {
   Pairs = 'pairs',
   Trends = 'trends',
   VTT = 'vtt',
+  Relationship = 'relationship',
   RAG = 'rag',
-  Relationship = 'relationship'
+  Locations = 'locations',
 }
 
 export enum SubPathEndpoint {

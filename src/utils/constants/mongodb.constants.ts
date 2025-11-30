@@ -1,6 +1,7 @@
 import {
   CommonMongoKeys,
   EcopetrolEnum,
+  LocationsEnum,
   PairsAffinityEnum,
   PairsRankingEnum,
   TrendsHumanRightsEnum,
@@ -17,7 +18,8 @@ export const commonStringKeys = [
 
 export const commonStringKeysWithLocation = [
   ...commonStringKeys,
-  CommonMongoKeys.Location,
+  LocationsEnum.LocationId,
+  LocationsEnum.StateId,
 ];
 
 export const trendsStringKeys = [...commonStringKeys, CommonMongoKeys.Entity];

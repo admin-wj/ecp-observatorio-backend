@@ -1,4 +1,5 @@
 export * from './ecopetrol.enums';
+export * from './locations.enums';
 export * from './pairs.enums';
 export * from './relationship.enums';
 export * from './shared.enums';

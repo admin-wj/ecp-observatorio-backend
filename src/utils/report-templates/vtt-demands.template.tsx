@@ -138,8 +138,6 @@ const VTTDemandsTemplate: FC<VTTDemandsTemplateProps> = ({
                 <tr key={i}>
                   {columns.map((column) => {
                     const value: any = d[column.field as keyof ActorSummary];
-                    if (column.field === 'keywords') console.log(value);
-
                     if (column.field === 'relevance') {
                       const relevanceData = value as {
                         [Relevance.Low]: number;

@@ -58,7 +58,40 @@ export const getMongoQuery = (
   return {
     ...getDateRangeQuery(dates, needsPastData, defaultDateRange),
     ...extraFilterKeys.reduce((acc, el) => {
-      if (arrayNotEmpty?.includes(el))
+      if (el === 'state_id') {
+        if (
+          extraFilters[el].length > 0 &&
+          (!extraFilters['location_id'] ||
+            extraFilters['location_id']?.length === 0)
+        ) {
+          const hasNull = extraFilters[el].includes('null');
+          const nonNullValues = extraFilters[el].filter(
+            (val: string) => val !== 'null',
+          );
+
+          if (hasNull && nonNullValues.length > 0) {
+            return {
+              ...acc,
+              $or: [
+                { location_id: null },
+                {
+                  location_id: {
+                    $regex: `^(${nonNullValues.join('|')})`,
+                    $options: 'i',
+                  },
+                },
+              ],
+            };
+          } else if (hasNull) {
+            acc['location_id'] = null;
+          } else {
+            acc['location_id'] = {
+              $regex: `^(${extraFilters[el].join('|')})`,
+              $options: 'i',
+            };
+          }
+        }
+      } else if (arrayNotEmpty?.includes(el))
         acc[el] = getMongoFilter(extraFilters[el], 'array-ne');
       else if (stringsNotEmpty?.includes(el))
         acc[el] = getMongoFilter(extraFilters[el], 'string-ne');

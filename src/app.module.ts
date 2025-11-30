@@ -9,11 +9,12 @@ import configuration from './config/configuration';
 import { validationSchema } from './config/validation';
 import { DatabaseModule } from './database/database.module';
 import { EcopetrolModule } from './modules/ecopetrol/ecopetrol.module';
+import { LocationsModule } from './modules/locations/locations.module';
 import { PairsModule } from './modules/pairs/pairs.module';
 import { RAGModule } from './modules/rag/rag.module';
+import { RelationshipModule } from './modules/relationship/relationship.module';
 import { TrendsModule } from './modules/trends/trends.module';
 import { VTTModule } from './modules/vtt/vtt.module';
-import { RelationshipModule } from './modules/relationship/relationship.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { RelationshipModule } from './modules/relationship/relationship.module';
     VTTModule,
     RelationshipModule,
     RAGModule,
+    LocationsModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AuthService],
